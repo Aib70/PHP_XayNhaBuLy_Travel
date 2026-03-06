@@ -1,0 +1,173 @@
+<?php
+class AdminController {
+
+    private $db;
+
+    public function __construct($pdo) {
+        $this->db = $pdo;
+    }
+
+    public function index() {
+
+        require_once '../app/models/AdminModel.php';
+
+        $adminModel = new AdminModel($this->db);
+
+        $places = $adminModel->getAllPlacesForAdmin();
+
+        $data = [
+            'places'=>$places
+        ];
+
+        require_once '../app/views/admin/index.php';
+    }
+
+    public function add() {
+
+        require_once '../app/views/admin/add.php';
+
+    }
+
+    public function store() {
+
+        if($_SERVER['REQUEST_METHOD']=='POST'){
+
+            $image_name='default.jpg';
+
+            if(isset($_FILES['image_main']) && $_FILES['image_main']['error']==0){
+
+                $ext=strtolower(pathinfo($_FILES['image_main']['name'],PATHINFO_EXTENSION));
+
+                $image_name=time().'_'.uniqid().'.'.$ext;
+
+                $target_dir="../public/img/places/";
+
+                if(!is_dir($target_dir)){
+                    mkdir($target_dir,0777,true);
+                }
+
+                move_uploaded_file($_FILES['image_main']['tmp_name'],$target_dir.$image_name);
+            }
+
+            $data=[
+
+                'category_id'=>$_POST['category_id'],
+
+                'lat'=>$_POST['lat'],
+                'lng'=>$_POST['lng'],
+
+                'image'=>$image_name,
+
+                'name_vi'=>$_POST['name_vi'],
+                'desc_vi'=>$_POST['desc_vi'],
+                'addr_vi'=>$_POST['addr_vi'],
+
+                'name_lo'=>$_POST['name_lo'],
+                'desc_lo'=>$_POST['desc_lo'],
+                'addr_lo'=>$_POST['addr_lo'],
+
+                'name_en'=>$_POST['name_en'],
+                'desc_en'=>$_POST['desc_en'],
+                'addr_en'=>$_POST['addr_en']
+
+            ];
+
+            require_once '../app/models/AdminModel.php';
+
+            $adminModel=new AdminModel($this->db);
+
+            if($adminModel->addPlace($data)){
+
+                header("Location: ".URLROOT."/admin");
+                exit();
+
+            }
+
+        }
+
+    }
+
+    public function edit($id){
+
+        require_once '../app/models/AdminModel.php';
+
+        $adminModel=new AdminModel($this->db);
+
+        $place=$adminModel->getPlaceById($id);
+
+        if(!$place){
+
+            die("Không tìm thấy địa danh!");
+
+        }
+
+        $data=['place'=>$place];
+
+        require_once '../app/views/admin/edit.php';
+
+    }
+
+    public function update($id){
+
+        if($_SERVER['REQUEST_METHOD']=='POST'){
+
+            require_once '../app/models/AdminModel.php';
+
+            $adminModel=new AdminModel($this->db);
+
+            $image_name=$_POST['current_image'] ?? 'default.jpg';
+
+            $data=[
+
+                'category_id'=>$_POST['category_id'],
+
+                'lat'=>$_POST['lat'],
+                'lng'=>$_POST['lng'],
+
+                'image'=>$image_name,
+
+                'name_vi'=>$_POST['name_vi'],
+                'desc_vi'=>$_POST['desc_vi'],
+                'addr_vi'=>$_POST['addr_vi'],
+
+                'name_lo'=>$_POST['name_lo'],
+                'desc_lo'=>$_POST['desc_lo'],
+                'addr_lo'=>$_POST['addr_lo'],
+
+                'name_en'=>$_POST['name_en'],
+                'desc_en'=>$_POST['desc_en'],
+                'addr_en'=>$_POST['addr_en']
+
+            ];
+
+            if($adminModel->updatePlace($id,$data)){
+
+                header("Location: ".URLROOT."/admin");
+                exit();
+
+            }
+
+        }
+
+    }
+
+    public function delete($id){
+
+        require_once '../app/models/AdminModel.php';
+
+        $adminModel=new AdminModel($this->db);
+
+        if($adminModel->deletePlace($id)){
+
+            header("Location: ".URLROOT."/admin");
+            exit();
+
+        }else{
+
+            die("Không thể xóa địa danh");
+
+        }
+
+    }
+
+}
