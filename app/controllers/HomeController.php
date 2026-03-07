@@ -6,17 +6,24 @@ class HomeController {
         $this->db = $pdo;
     }
 
-   public function index() {
-    $lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'vi';
+  public function index() {
+    $lang = $_SESSION['lang'] ?? 'vi';
+    $keyword = $_GET['search'] ?? ''; // Lấy từ khóa từ thanh địa chỉ
 
-    // Gọi Model để lấy danh sách địa danh
     require_once '../app/models/PlaceModel.php';
     $placeModel = new PlaceModel($this->db);
-    $featuredPlaces = $placeModel->getPlacesHome($lang);
 
-    // Truyền dữ liệu vào view thông qua biến $data
+    if (!empty($keyword)) {
+        // Nếu có từ khóa, thực hiện tìm kiếm
+        $places = $placeModel->searchPlaces($keyword, $lang);
+    } else {
+        // Nếu không, hiện danh sách mặc định
+        $places = $placeModel->getPlacesHome($lang);
+    }
+
     $data = [
-        'places' => $featuredPlaces
+        'places' => $places,
+        'keyword' => $keyword
     ];
 
     require_once '../app/views/inc/header.php';

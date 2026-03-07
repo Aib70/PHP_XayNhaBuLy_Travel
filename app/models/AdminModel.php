@@ -170,4 +170,34 @@ class AdminModel {
         }
 
     }
+
+    public function getRelatedPlaces($current_id, $lang) {
+    try {
+        $sql = "SELECT p.id, p.image_main, pt.name 
+                FROM places p 
+                JOIN place_translations pt ON p.id = pt.place_id 
+                WHERE pt.lang_code = :lang AND p.id != :current_id 
+                ORDER BY RAND() LIMIT 3"; // Lấy ngẫu nhiên 3 địa danh khác
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['lang' => $lang, 'current_id' => $current_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        return [];
+    }
+  }
+
+  public function getAllBookings($lang = 'vi') {
+    try {
+        $sql = "SELECT b.*, pt.name as place_name 
+                FROM bookings b
+                JOIN place_translations pt ON b.place_id = pt.place_id
+                WHERE pt.lang_code = :lang
+                ORDER BY b.created_at DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['lang' => $lang]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return [];
+    }
+  }
 }

@@ -7,35 +7,60 @@ class PlaceController {
     }
 
     public function view($id) {
-        // 1. Lấy ngôn ngữ từ Session
-        $current_lang = isset($_SESSION['lang']) ? $_SESSION['lang'] : 'vi';
+        $lang = $_SESSION['lang'] ?? 'vi';
+        require_once '../app/models/AdminModel.php';
+        $adminModel = new AdminModel($this->db);
+        
+        // Lấy dữ liệu địa danh
+        $place = $adminModel->getPlaceById($id);
 
-        // 2. Gọi Model lấy dữ liệu
-        require_once '../app/models/PlaceModel.php';
-        $model = new PlaceModel($this->db);
-        $data = $model->getPlaceDetail($id, $current_lang);
-
-        // 3. Hiển thị
-        if ($data) {
-            echo "<div style='font-family: Arial; padding: 20px; max-width: 800px; margin: auto;'>";
-                echo "<h1>" . htmlspecialchars($data['name']) . "</h1>";
-                echo "<p style='color: gray;'>Ngôn ngữ hiện tại: <strong>" . strtoupper($current_lang) . "</strong></p>";
-                echo "<hr>";
-                echo "<div style='font-size: 1.2em; line-height: 1.6;'>" . nl2br(htmlspecialchars($data['description'])) . "</div>";
-                echo "<p><strong>📍 Địa chỉ:</strong> " . htmlspecialchars($data['address'] ?? 'Updating...') . "</p>";
-                
-                // PHẦN QUAN TRỌNG: Nút chuyển đổi 3 ngôn ngữ
-                echo "<div style='margin-top: 30px; padding: 10px; background: #f4f4f4;'>";
-                    echo "<strong>Chuyển đổi ngôn ngữ: </strong>";
-                    echo "<a href='".URLROOT."/language/change/vi'>Tiếng Việt</a> | ";
-                    echo "<a href='".URLROOT."/language/change/lo'>Tiếng Lào</a> | ";
-                    echo "<a href='".URLROOT."/language/change/en'>English</a>";
-                echo "</div>";
-                
-                echo "<br><a href='".URLROOT."/admin'>← Quay lại Admin</a>";
-            echo "</div>";
-        } else {
-            echo "Dữ liệu không tồn tại cho ngôn ngữ này!";
+        // Kiểm tra nếu địa danh không có trong Database
+        if (!$place) { 
+            // Gọi trang 404 thay vì báo lỗi die()
+            require_once '../app/views/404.php'; 
+            exit(); 
         }
+
+        // Lấy thêm danh sách liên quan
+        $related = $adminModel->getRelatedPlaces($id, $lang);
+
+        $data = [
+            'place' => $place,
+            'related' => $related,
+            'lang' => $lang
+        ];
+
+        require_once '../app/views/inc/header.php';
+        require_once '../app/views/places/view.php';
     }
+
+    public function book() {
+    // 1. Kiểm tra nếu có dữ liệu POST gửi lên
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        
+        // 2. Nhúng Model để xử lý lưu vào Database
+        require_once '../app/models/PlaceModel.php';
+        $placeModel = new PlaceModel($this->db);
+
+        // 3. Chuẩn bị dữ liệu từ Form (Khớp với các cột trong bảng bookings của bạn)
+        $bookingData = [
+            'place_id' => $_POST['place_id'],
+            'name'     => $_POST['name'],
+            'email'    => $_POST['email'],
+            'date'     => $_POST['date']
+        ];
+
+        // 4. Gọi hàm lưu trong Model (Chúng ta sẽ viết ở bước 2)
+        if ($placeModel->createBooking($bookingData)) {
+            // Nếu thành công, quay lại trang chi tiết và báo thành công
+            header('Location: ' . URLROOT . '/place/view/' . $_POST['place_id'] . '?success=1');
+            exit();
+        } else {
+            die("Lỗi: Không thể lưu thông tin đặt chỗ.");
+        }
+    } else {
+        // Nếu ai đó truy cập trực tiếp bằng link mà không qua Form -> về Home
+        header('Location: ' . URLROOT);
+    }
+  }
 }

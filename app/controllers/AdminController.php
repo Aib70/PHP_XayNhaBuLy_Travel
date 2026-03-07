@@ -1,10 +1,16 @@
 <?php
 class AdminController {
 
-    private $db;
+   private $db;
 
     public function __construct($pdo) {
         $this->db = $pdo;
+
+        // KIỂM TRA BẢO MẬT: Nếu chưa đăng nhập thì không cho vào
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . URLROOT . '/auth/login');
+            exit();
+        }
     }
 
     public function index() {
@@ -169,5 +175,20 @@ class AdminController {
         }
 
     }
+
+    public function bookings() {
+    // Kiểm tra đăng nhập (đã cài ở __construct)
+    require_once '../app/models/AdminModel.php';
+    $adminModel = new AdminModel($this->db);
+    
+    $lang = $_SESSION['lang'] ?? 'vi';
+    $bookings = $adminModel->getAllBookings($lang);
+
+    $data = [
+        'bookings' => $bookings
+    ];
+
+    require_once '../app/views/admin/bookings.php';
+ }
 
 }
