@@ -114,6 +114,10 @@
 }
 </style>
 
+
+
+<?php require_once '../app/views/inc/header.php'; ?>
+
 <div style="max-width:1200px;margin:auto;padding:20px;">
 
     <div class="video-banner">
@@ -205,3 +209,5 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<?php require_once '../app/views/inc/footer.php'; ?>

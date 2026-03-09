@@ -7,27 +7,88 @@ class PlaceController {
     }
 
     public function view($id) {
-        $lang = $_SESSION['lang'] ?? 'vi';
+        $lang = $_SESSION['lang'] ?? 'vi'; // Lấy ngôn ngữ hiện tại
         require_once '../app/models/AdminModel.php';
         $adminModel = new AdminModel($this->db);
         
-        // Lấy dữ liệu địa danh
+        // 1. Lấy dữ liệu địa danh chi tiết
         $place = $adminModel->getPlaceById($id);
 
-        // Kiểm tra nếu địa danh không có trong Database
         if (!$place) { 
-            // Gọi trang 404 thay vì báo lỗi die()
-            require_once '../app/views/404.php'; 
+            require_once '../app/views/404.php'; // Trang lỗi đa ngôn ngữ
             exit(); 
         }
 
-        // Lấy thêm danh sách liên quan
+        // 2. Lấy danh sách địa danh liên quan
         $related = $adminModel->getRelatedPlaces($id, $lang);
+
+        // 3. Lấy danh sách Bình luận đã duyệt
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM forum_posts WHERE status = 1 ORDER BY created_at DESC");
+            $stmt->execute();
+            $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $comments = [];
+        }
+
+        // 4. ĐỊNH NGHĨA BỘ TỪ ĐIỂN ĐA NGÔN NGỮ CHO GIAO DIỆN
+        $languages = [
+            'vi' => [
+                'intro' => 'Giới thiệu',
+                'address' => 'Địa chỉ',
+                'location' => 'Vị trí trên bản đồ',
+                'direction' => 'Chỉ đường đi',
+                'related' => 'Địa danh liên quan',
+                'booking_title' => 'Phiếu Đặt Chỗ',
+                'date_label' => 'Ngày dự kiến tham quan:',
+                'btn_book' => 'GỬI YÊU CẦU ĐẶT CHỖ',
+                'comment_title' => 'Bình luận & Đánh giá',
+                'comment_placeholder' => 'Viết bình luận của bạn tại đây...',
+                'btn_comment' => 'Gửi bình luận',
+                'login_req' => 'Vui lòng đăng nhập để đặt chỗ.',
+                'login_btn' => 'Đăng nhập ngay',
+                'subject' => 'Tiêu đề bình luận',
+            ],
+            'lo' => [
+                'intro' => 'ກ່ຽວກັບ',
+                'address' => 'ທີ່ຢູ່',
+                'location' => 'ແຜນທີ່',
+                'direction' => 'ເສັ້ນທາງ',
+                'related' => 'ສະຖານທີ່ທີ່ກ່ຽວຂ້ອງ',
+                'booking_title' => 'ແບບຟອມຈອງ',
+                'date_label' => 'ວັນທີຄາດວ່າຈະມາຢ້ຽມຢາມ:',
+                'btn_book' => 'ສົ່ງຄຳຮ້ອງຈອງ',
+                'comment_title' => 'ຄຳຄິດເຫັນ ແລະ ການໃຫ້ຄະແນນ',
+                'comment_placeholder' => 'ຂຽນຄຳຄິດເຫັນຂອງທ່ານທີ່ນີ້...',
+                'btn_comment' => 'ສົ່ງຄຳຮ້ອງຈອງ',
+                'login_req' => 'ກະລຸນາເຂົ້າສູ່ລະບົບເພື່ອຈອງ.',
+                'login_btn' => 'ເຂົ້າສູ່ລະບົບດຽວນີ້',
+                'subject' => 'ຫົວຂໍ້ຄຳຄິດເຫັນ',
+            ],
+            'en' => [
+                'intro' => 'About',
+                'address' => 'Address',
+                'location' => 'Location',
+                'direction' => 'Get Directions',
+                'related' => 'Related Places',
+                'booking_title' => 'Book Your Trip',
+                'date_label' => 'Expected date:',
+                'btn_book' => 'SUBMIT REQUEST',
+                'comment_title' => 'Comments & Reviews',
+                'comment_placeholder' => 'Write your comment here...',
+                'btn_comment' => 'Post Comment',
+                'login_req' => 'Please login to book a trip.',
+                'login_btn' => 'Login now',
+                'subject' => 'Comment Subject',
+            ]
+        ];
 
         $data = [
             'place' => $place,
             'related' => $related,
-            'lang' => $lang
+            'comments' => $comments,
+            'lang' => $lang,
+            'text' => $languages[$lang] // Truyền bộ từ điển tương ứng sang View
         ];
 
         require_once '../app/views/inc/header.php';
@@ -35,32 +96,25 @@ class PlaceController {
     }
 
     public function book() {
-    // 1. Kiểm tra nếu có dữ liệu POST gửi lên
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        
-        // 2. Nhúng Model để xử lý lưu vào Database
-        require_once '../app/models/PlaceModel.php';
-        $placeModel = new PlaceModel($this->db);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            require_once '../app/models/PlaceModel.php';
+            $placeModel = new PlaceModel($this->db);
 
-        // 3. Chuẩn bị dữ liệu từ Form (Khớp với các cột trong bảng bookings của bạn)
-        $bookingData = [
-            'place_id' => $_POST['place_id'],
-            'name'     => $_POST['name'],
-            'email'    => $_POST['email'],
-            'date'     => $_POST['date']
-        ];
+            $bookingData = [
+                'place_id' => $_POST['place_id'],
+                'name'     => $_POST['name'],
+                'email'    => $_POST['email'],
+                'date'     => $_POST['date']
+            ];
 
-        // 4. Gọi hàm lưu trong Model (Chúng ta sẽ viết ở bước 2)
-        if ($placeModel->createBooking($bookingData)) {
-            // Nếu thành công, quay lại trang chi tiết và báo thành công
-            header('Location: ' . URLROOT . '/place/view/' . $_POST['place_id'] . '?success=1');
-            exit();
+            if ($placeModel->createBooking($bookingData)) {
+                header('Location: ' . URLROOT . '/place/view/' . $_POST['place_id'] . '?success=1');
+                exit();
+            } else {
+                die("Lỗi lưu dữ liệu.");
+            }
         } else {
-            die("Lỗi: Không thể lưu thông tin đặt chỗ.");
+            header('Location: ' . URLROOT);
         }
-    } else {
-        // Nếu ai đó truy cập trực tiếp bằng link mà không qua Form -> về Home
-        header('Location: ' . URLROOT);
     }
-  }
 }

@@ -4,14 +4,19 @@ class AdminController {
    private $db;
 
     public function __construct($pdo) {
-        $this->db = $pdo;
+    $this->db = $pdo;
 
-        // KIỂM TRA BẢO MẬT: Nếu chưa đăng nhập thì không cho vào
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: ' . URLROOT . '/auth/login');
-            exit();
-        }
+    // Khởi động session nếu chưa có
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
     }
+
+    // Chốt chặn: Nếu không có admin_id HOẶC vai trò không phải admin thì đá ra ngoài
+    if (!isset($_SESSION['admin_id']) || $_SESSION['role'] !== 'admin') {
+        header('Location: ' . URLROOT . '/home');
+        exit();
+    }
+}
 
     public function index() {
 
@@ -191,4 +196,16 @@ class AdminController {
     require_once '../app/views/admin/bookings.php';
  }
 
+ public function forum() {
+    $stmt = $this->db->query("SELECT * FROM forum_posts ORDER BY status ASC, created_at DESC");
+    $data['posts'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    require_once '../app/views/admin/forum.php';
 }
+
+public function approve_post($id) {
+    $stmt = $this->db->prepare("UPDATE forum_posts SET status = 1 WHERE id = ?");
+    $stmt->execute([$id]);
+    header('Location: ' . URLROOT . '/admin/forum');
+  }
+ 
+ }

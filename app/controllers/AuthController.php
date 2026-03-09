@@ -6,52 +6,57 @@ class AuthController {
         $this->db = $pdo;
     }
 
-    // Hiển thị trang đăng nhập
+    // Hiển thị trang đăng nhập Admin
     public function login() {
-        if (isset($_SESSION['user_id'])) {
+        // Kiểm tra nếu ĐÃ ĐĂNG NHẬP VỚI QUYỀN ADMIN thì mới cho vào thẳng
+        if (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin') {
             header('Location: ' . URLROOT . '/admin');
             exit();
         }
         require_once '../app/views/auth/login.php';
     }
 
-    // Xử lý dữ liệu gửi từ Form
+    // Xử lý dữ liệu gửi từ Form đăng nhập Admin
     public function authenticate() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user = $_POST['username'];
             $pass = $_POST['password'];
 
-            $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+            $stmt = $this->db->prepare("SELECT * FROM admin WHERE username = ?");
             $stmt->execute([$user]);
             $foundUser = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Kiểm tra mật khẩu (Ở đây so sánh trực tiếp, sau này nên dùng password_verify)
+            // 1. Kiểm tra mật khẩu (Sử dụng password_verify nếu bạn đã hash pass)
             if ($foundUser && $pass == $foundUser['password']) {
-                $_SESSION['user_id'] = $foundUser['id'];
-                $_SESSION['user_name'] = $foundUser['fullname'];
+                
+                // 2. THIẾT LẬP SESSION RIÊNG CHO ADMIN
+                $_SESSION['admin_id'] = $foundUser['id'];
+                $_SESSION['admin_name'] = $foundUser['fullname'];
+                $_SESSION['role'] = 'admin'; // Gán vai trò là admin
+
                 header('Location: ' . URLROOT . '/admin');
                 exit();
             } else {
-                die("Sai tên đăng nhập hoặc mật khẩu!");
+                die("Sai tên đăng nhập hoặc mật khẩu quản trị!");
             }
         }
     }
 
-    // Đăng xuất
+    // Đăng xuất Admin
     public function logout() {
-    // 1. Bắt đầu session (nếu chưa có)
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Chỉ xóa các session liên quan đến Admin để không làm ảnh hưởng session khách (nếu cần)
+        unset($_SESSION['admin_id']);
+        unset($_SESSION['admin_name']);
+        unset($_SESSION['role']);
+
+        // Hoặc hủy toàn bộ nếu muốn đăng xuất sạch sẽ
+        session_destroy();
+
+        header('Location: ' . URLROOT . '/home');
+        exit();
     }
-
-    // 2. Xóa toàn bộ biến session
-    $_SESSION = array();
-
-    // 3. Hủy session trên server
-    session_destroy();
-
-    // 4. Chuyển hướng người dùng về trang đăng nhập hoặc trang chủ
-    header('Location: ' . URLROOT . '/home');
-    exit();
-}
 }

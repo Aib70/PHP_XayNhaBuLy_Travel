@@ -94,6 +94,7 @@
                             <a href="<?php echo URLROOT; ?>/admin/delete/<?php echo $place['id']; ?>" 
                                class="delete" 
                                onclick="return confirm('Bạn có chắc chắn muốn xóa địa danh này?')">Xóa</a>
+                               <a href="<?php echo URLROOT; ?>/admin/forum" class="btn-bookings" style="background: #6f42c1;">📢 Quản lý Diễn đàn</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
