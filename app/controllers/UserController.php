@@ -51,65 +51,82 @@ public function login_process() {
 
         $email = $_POST['email'];
         $password = $_POST['password'];
-
-        // 1. Tìm người dùng theo email trong bảng users
-        $user = $userModel->getUserByEmail($email);
-
-        // Chuẩn bị dữ liệu ngôn ngữ để hiển thị lại nếu có lỗi
         $lang = $_SESSION['lang'] ?? 'vi';
+
+        // Bộ từ điển thông báo lỗi
         $languages = [
             'vi' => [
-                'login_title' => 'Đăng nhập người dùng',
-                'email' => 'Địa chỉ Email',
-                'pass' => 'Mật khẩu',
-                'btn' => 'ĐĂNG NHẬP',
                 'error_not_found' => 'Tài khoản không tồn tại. Vui lòng đăng ký!',
                 'error_wrong_pass' => 'Mật khẩu không chính xác!'
             ],
             'lo' => [
-                'login_title' => 'ເຂົ້າສູ່ລະບົບ',
-                'email' => 'ອີເມວ',
-                'pass' => 'ລະຫັດຜ່ານ',
-                'btn' => 'ເຂົ້າສູ່ລະບົບ',
                 'error_not_found' => 'ບໍ່ມີບັນຊີນີ້ໃນລະບົບ. ກະລຸນາລົງທະບຽນ!',
                 'error_wrong_pass' => 'ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ!'
             ],
             'en' => [
-                'login_title' => 'User Login',
-                'email' => 'Email Address',
-                'pass' => 'Password',
-                'btn' => 'LOGIN',
                 'error_not_found' => 'Account does not exist. Please register!',
                 'error_wrong_pass' => 'Incorrect password!'
             ]
         ];
 
-        // 2. KIỂM TRA LOGIC
-        if (!$user) {
-            // TRƯỜNG HỢP: Email chưa đăng ký
-            $data = [
-                'text' => $languages[$lang],
-                'error_msg' => $languages[$lang]['error_not_found'],
-                'show_register_link' => true // Gợi ý đăng ký
-            ];
-            require_once '../app/views/user/login.php';
-        } else if (!password_verify($password, $user['password'])) {
-            // TRƯỜNG HỢP: Có email nhưng sai mật khẩu
-            $data = [
-                'text' => $languages[$lang],
-                'error_msg' => $languages[$lang]['error_wrong_pass']
-            ];
-            require_once '../app/views/user/login.php';
+        // --- TẦNG 1: KIỂM TRA TRONG BẢNG USERS (KHÁCH HÀNG) ---
+        $user = $userModel->getUserByEmail($email);
+
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['fullname'];
+                $_SESSION['user_email'] = $user['email'];
+                $_SESSION['role'] = 'member';
+                header('Location: ' . URLROOT . '/home');
+                exit();
+            } else {
+                $error_msg = $languages[$lang]['error_wrong_pass'];
+            }
         } else {
-            // Đăng nhập thành công
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['fullname'];
-            $_SESSION['user_email'] = $user['email']; // THÊM DÒNG NÀY
-            header('Location: ' . URLROOT . '/home');
-            exit();
+            // --- TẦNG 2: KIỂM TRA TRONG BẢNG ADMIN (NẾU KHÔNG THẤY TRONG USERS) ---
+            $stmtAdmin = $this->db->prepare("SELECT * FROM admin WHERE email = ?");
+            $stmtAdmin->execute([$email]);
+            $admin = $stmtAdmin->fetch(PDO::FETCH_ASSOC);
+
+            if ($admin) {
+                // Kiểm tra mật khẩu Admin (So khớp trực tiếp '123456' theo DB của bạn)
+                if ($password == $admin['password']) {
+                    $_SESSION['admin_id'] = $admin['id'];
+                    $_SESSION['admin_name'] = $admin['fullname'];
+                    $_SESSION['user_email'] = $admin['email'];
+                    $_SESSION['role'] = 'admin';
+                    header('Location: ' . URLROOT . '/admin');
+                    exit();
+                } else {
+                    $error_msg = $languages[$lang]['error_wrong_pass'];
+                }
+            } else {
+                // KHÔNG TÌM THẤY Ở CẢ 2 BẢNG
+                $error_msg = $languages[$lang]['error_not_found'];
+                $show_register = true;
+            }
         }
+
+        // Nếu có lỗi, tải lại trang login kèm thông báo
+        $data = [
+            'text' => $this->getLoginLabels($lang), // Hàm lấy nhãn ngôn ngữ
+            'error_msg' => $error_msg,
+            'show_register_link' => $show_register ?? false
+        ];
+        require_once '../app/views/user/login.php';
     }
-  }
+}
+
+// Hàm phụ để lấy nhãn ngôn ngữ tránh lặp code
+private function getLoginLabels($lang) {
+    $labels = [
+        'vi' => ['login_title' => 'Đăng nhập người dùng', 'email' => 'Địa chỉ Email', 'pass' => 'Mật khẩu', 'btn' => 'ĐĂNG NHẬP'],
+        'lo' => ['login_title' => 'ເຂົ້າສູ່ລະບົບ', 'email' => 'ອີເມວ', 'pass' => 'ລະຫັດຜ່ານ', 'btn' => 'ເຂົ້າສູ່ລະບົບ'],
+        'en' => ['login_title' => 'User Login', 'email' => 'Email Address', 'pass' => 'Password', 'btn' => 'LOGIN']
+    ];
+    return $labels[$lang];
+}
 
   public function logout() {
     // 1. Kiểm tra session
