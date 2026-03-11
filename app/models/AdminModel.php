@@ -186,18 +186,15 @@ class AdminModel {
     }
   }
 
-  public function getAllBookings($lang = 'vi') {
-    try {
-        $sql = "SELECT b.*, pt.name as place_name 
-                FROM bookings b
-                JOIN place_translations pt ON b.place_id = pt.place_id
-                WHERE pt.lang_code = :lang
-                ORDER BY b.created_at DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['lang' => $lang]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        return [];
-    }
-  }
+  public function getAllBookings() {
+    // Truy vấn lấy dữ liệu, đảm bảo có cột phone và status
+    $sql = "SELECT b.*, p.name_vi as place_name 
+            FROM bookings b
+            JOIN places p ON b.place_id = p.id
+            ORDER BY b.created_at DESC";
+    
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+ }
 }

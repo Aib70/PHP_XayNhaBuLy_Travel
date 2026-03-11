@@ -51,6 +51,7 @@
         </div>
         <div>
             <a href="<?php echo URLROOT; ?>/home" target="_blank">🏠 Xem trang chủ</a>
+
             <a href="<?php echo URLROOT; ?>/auth/logout" class="btn-logout" 
                onclick="return confirm('Bạn có chắc chắn muốn đăng xuất không?')">🚪 Đăng xuất</a>
         </div>
@@ -62,6 +63,7 @@
         <div class="header-actions">
             <a href="<?php echo URLROOT; ?>/admin/add" class="btn-add">+ Thêm địa danh mới</a>
             <a href="<?php echo URLROOT; ?>/admin/bookings" class="btn-bookings">📋 Danh sách đặt chỗ</a>
+            <a href="<?php echo URLROOT; ?>/admin/users" class="btn" style="background: #6f42c1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-left: 10px;">👥 Quản lý người dùng</a>
         </div>
 
         <table>

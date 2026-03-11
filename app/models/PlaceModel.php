@@ -63,18 +63,18 @@ class PlaceModel {
   }
 
   public function createBooking($data) {
-    try {
-        $sql = "INSERT INTO bookings (place_id, user_name, user_email, booking_date, status) 
-                VALUES (:place_id, :name, :email, :date, 'pending')";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([
-            'place_id'   => $data['place_id'],
-            'name'       => $data['name'],
-            'email'      => $data['email'],
-            'date'       => $data['date']
-        ]);
-    } catch (PDOException $e) {
-        return false;
-    }
- }
+    // Sửa fullname -> user_name | email -> user_email để khớp với ảnh Workbench
+    $sql = "INSERT INTO bookings (place_id, user_name, user_email, phone, booking_date, created_at) 
+            VALUES (?, ?, ?, ?, ?, NOW())";
+    
+    $stmt = $this->db->prepare($sql);
+    
+    return $stmt->execute([
+        $data['place_id'],
+        $data['name'],     // Dữ liệu từ Controller
+        $data['email'],    // Dữ liệu từ Controller
+        $data['phone'],    // Dữ liệu từ Controller
+        $data['date']      // Dữ liệu từ Controller
+    ]);
+  }
 }

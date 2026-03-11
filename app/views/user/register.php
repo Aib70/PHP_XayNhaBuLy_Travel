@@ -100,6 +100,12 @@
                placeholder="Email">
     </div>
 
+    <div style="margin-bottom: 15px;">
+    <input type="tel" name="phone" required 
+           placeholder="<?php echo ($lang == 'lo') ? 'ເບີໂທລະສັບ' : (($lang == 'en') ? 'Phone Number' : 'Số điện thoại'); ?>" 
+           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+    </div>
+
     <div class="form-group">
         <input type="password" name="password" required 
                placeholder="<?php echo ($lang == 'lo') ? 'ລະຫັດຜ່ານ' : (($lang == 'vi') ? 'Mật khẩu' : 'Password'); ?>">
