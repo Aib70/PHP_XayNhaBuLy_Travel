@@ -120,56 +120,51 @@ class AdminModel {
     }
 
     public function updatePlace($id, $data) {
+    try {
+        $this->db->beginTransaction();
 
-        try {
+        $sql1 = "UPDATE places 
+                 SET category_id=?, latitude=?, longitude=?, image_main=? 
+                 WHERE id=?";
 
-            $this->db->beginTransaction();
+        $stmt1 = $this->db->prepare($sql1);
+        $stmt1->execute([
+            $data['category_id'],
+            $data['lat'],
+            $data['lng'],
+            $data['image'],
+            $id
+        ]);
 
-            $sql1 = "UPDATE places 
-                     SET category_id=?, latitude=?, longitude=? 
-                     WHERE id=?";
+        $this->db->prepare("DELETE FROM place_translations WHERE place_id=?")
+                 ->execute([$id]);
 
-            $this->db->prepare($sql1)->execute([
-                $data['category_id'],
-                $data['lat'],
-                $data['lng'],
-                $id
+        $sql2 = "INSERT INTO place_translations 
+                (place_id, lang_code, name, description, address) 
+                VALUES (?, ?, ?, ?, ?)";
+
+        $stmt2 = $this->db->prepare($sql2);
+        $langs = ['vi', 'lo', 'en'];
+
+        foreach ($langs as $lang) {
+            $stmt2->execute([
+                $id,
+                $lang,
+                // Sử dụng ?? '' để tránh lỗi Column 'name' cannot be null
+                $data['name_'.$lang] ?? '', 
+                $data['desc_'.$lang] ?? '',
+                $data['addr_'.$lang] ?? ''
             ]);
-
-            $this->db->prepare("DELETE FROM place_translations WHERE place_id=?")
-                     ->execute([$id]);
-
-            $sql2 = "INSERT INTO place_translations 
-                    (place_id, lang_code, name, description, address) 
-                    VALUES (?, ?, ?, ?, ?)";
-
-            $stmt2 = $this->db->prepare($sql2);
-
-            $langs = ['vi','lo','en'];
-
-            foreach ($langs as $lang) {
-
-                $stmt2->execute([
-                    $id,
-                    $lang,
-                    $data['name_'.$lang],
-                    $data['desc_'.$lang],
-                    $data['addr_'.$lang]
-                ]);
-
-            }
-
-            $this->db->commit();
-            return true;
-
-        } catch (Exception $e) {
-
-            $this->db->rollBack();
-            die("Lỗi khi cập nhật: " . $e->getMessage());
-
         }
 
+        $this->db->commit();
+        return true;
+
+    } catch (Exception $e) {
+        $this->db->rollBack();
+        die("Lỗi khi cập nhật Database: " . $e->getMessage());
     }
+}
 
     public function getRelatedPlaces($current_id, $lang) {
     try {
