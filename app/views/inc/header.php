@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xayabury Travel - <?php echo strtoupper($_SESSION['lang']); ?></title>
+    <title>Xayabury Travel - <?php echo strtoupper($_SESSION['lang'] ?? 'VI'); ?></title>
     <style>
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .navbar { background: #333; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
@@ -28,12 +28,30 @@
 <body>
 
 <?php 
-    // Bộ từ điển nhanh cho Header
+    // Bộ từ điển nhanh cho Header - ĐÃ THÊM 'festivals'
     $lang = $_SESSION['lang'] ?? 'vi';
     $menu = [
-        'vi' => ['home' => 'Trang chủ', 'places' => 'Địa danh', 'about' => 'Về chúng tôi', 'logout' => 'Đăng xuất'],
-        'lo' => ['home' => 'ໜ້າຫຼັກ', 'places' => 'ສະຖານທີ່', 'about' => 'ກ່ຽວກັບພວກເຮົາ', 'logout' => 'ອອກຈາກລະບົບ'],
-        'en' => ['home' => 'Home', 'places' => 'Places', 'about' => 'About Us', 'logout' => 'Logout']
+        'vi' => [
+            'home' => 'Trang chủ', 
+            'places' => 'Địa danh', 
+            'festivals' => 'Các lễ hội', // Thêm mới
+            'about' => 'Về chúng tôi', 
+            'logout' => 'Đăng xuất'
+        ],
+        'lo' => [
+            'home' => 'ໜ້າຫຼັກ', 
+            'places' => 'ສະຖານທີ່', 
+            'festivals' => 'ບຸນປະເພນີ', // Thêm mới
+            'about' => 'ກ່ຽວກັບພວກເຮົາ', 
+            'logout' => 'ອອກຈາກລະບົບ'
+        ],
+        'en' => [
+            'home' => 'Home', 
+            'places' => 'Places', 
+            'festivals' => 'Festivals', // Thêm mới
+            'about' => 'About Us', 
+            'logout' => 'Logout'
+        ]
     ];
     $text = $menu[$lang];
 ?>
@@ -45,6 +63,13 @@
         <ul class="nav-links">
             <li><a href="<?php echo URLROOT; ?>"><?php echo $text['home']; ?></a></li>
             <li><a href="#"><?php echo $text['places']; ?></a></li>
+            
+            <li>
+            <a href="<?php echo URLROOT; ?>/place/category/5" >
+            <?php echo $text['festivals']; ?>
+            </a>
+            </li>
+
             <li><a href="#"><?php echo $text['about']; ?></a></li>
             
             <?php if(isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>

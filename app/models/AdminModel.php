@@ -192,4 +192,37 @@ class AdminModel {
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
  }
+
+ public function getGalleryImages($place_id) {
+    // Giả sử bạn có bảng place_images để lưu nhiều ảnh cho 1 địa danh
+    $sql = "SELECT image_path FROM place_images WHERE place_id = ?";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([$place_id]);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+ }
+
+ // Thêm hàm này vào cuối lớp AdminModel
+public function getPlacesByCategory($cat_id, $lang) {
+    try {
+        $sql = "SELECT 
+                    p.id, 
+                    p.image_main, 
+                    pt.name, 
+                    pt.description,
+                    pt.address
+                FROM places p 
+                JOIN place_translations pt ON p.id = pt.place_id 
+                WHERE p.category_id = :cat_id AND pt.lang_code = :lang
+                ORDER BY p.id DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['cat_id' => $cat_id, 'lang' => $lang]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        error_log("Lỗi lấy địa danh theo danh mục: " . $e->getMessage());
+        return [];
+    }
+}
+
 }

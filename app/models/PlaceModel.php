@@ -77,4 +77,27 @@ class PlaceModel {
         $data['date']      // Dữ liệu từ Controller
     ]);
   }
+
+  public function getPlacesByCategory($cat_id, $lang) {
+    try {
+        // Câu lệnh SQL này sẽ chỉ lấy những địa danh có category_id khớp với số truyền vào (ví dụ là 5)
+        $sql = "SELECT p.id, p.image_main, pt.name, pt.description 
+                FROM places p 
+                JOIN place_translations pt ON p.id = pt.place_id 
+                WHERE p.category_id = :cat_id 
+                AND pt.lang_code = :lang 
+                ORDER BY p.id DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'cat_id' => $cat_id, // Lúc này cat_id sẽ nhận giá trị là 5 từ Controller
+            'lang' => $lang
+        ]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return [];
+    }
+  }
+
 }
