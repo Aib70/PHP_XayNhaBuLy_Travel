@@ -16,43 +16,50 @@ class AdminController {
         }
     }
 
-    // --- QUẢN LÝ ĐỊA DANH ---
+    // Trang Quản lý ĐỊA DANH
     public function index() {
         require_once '../app/models/AdminModel.php';
         $adminModel = new AdminModel($this->db);
-        $places = $adminModel->getAllPlacesForAdmin();
-        $data = ['places' => $places];
+        $places = $adminModel->getAllPlacesExceptHotels(); 
+        $data = ['places' => $places, 'is_hotel_page' => false];
         require_once '../app/views/admin/index.php';
     }
 
+    // Trang Quản lý KHÁCH SẠN
+    public function hotels() {
+        require_once '../app/models/AdminModel.php';
+        $adminModel = new AdminModel($this->db);
+        $hotels = $adminModel->getOnlyHotels(); 
+        $data = ['places' => $hotels, 'title' => 'Quản lý Khách sạn', 'is_hotel_page' => true];
+        require_once '../app/views/admin/index.php';
+    }
+
+    // Trang thêm Khách sạn (Giao diện riêng)
+    public function add_hotel() {
+        require_once '../app/views/admin/add_hotel.php';
+    }
+
+   // Trang thêm Địa danh
     public function add() {
-    // 1. Lấy danh sách categories từ database
-    $stmt = $this->db->query("SELECT * FROM categories");
-    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->db->query("SELECT * FROM categories WHERE id != 2");
+        $data = ['categories' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
+        require_once '../app/views/admin/add.php';
+    }
 
-    // 2. Truyền vào View
-    $data = [
-        'categories' => $categories
-    ];
-
-    require_once '../app/views/admin/add.php';
-}
-
+    // Hàm lưu dữ liệu (Dùng chung)
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $image_name = 'default.jpg';
             if (isset($_FILES['image_main']) && $_FILES['image_main']['error'] == 0) {
-                $ext = strtolower(pathinfo($_FILES['image_main']['name'], PATHINFO_EXTENSION));
-                $image_name = time() . '_' . uniqid() . '.' . $ext;
-                $target_dir = "../public/img/places/";
-                if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
-                move_uploaded_file($_FILES['image_main']['tmp_name'], $target_dir . $image_name);
+                $image_name = time() . '_' . $_FILES['image_main']['name'];
+                move_uploaded_file($_FILES['image_main']['tmp_name'], "../public/img/places/" . $image_name);
             }
 
             $data = [
                 'category_id' => $_POST['category_id'],
                 'lat' => $_POST['lat'], 'lng' => $_POST['lng'],
                 'image' => $image_name,
+                'is_special' => isset($_POST['is_special']) ? 1 : 0,
                 'name_vi' => $_POST['name_vi'], 'desc_vi' => $_POST['desc_vi'], 'addr_vi' => $_POST['addr_vi'],
                 'name_lo' => $_POST['name_lo'], 'desc_lo' => $_POST['desc_lo'], 'addr_lo' => $_POST['addr_lo'],
                 'name_en' => $_POST['name_en'], 'desc_en' => $_POST['desc_en'], 'addr_en' => $_POST['addr_en']
@@ -61,20 +68,32 @@ class AdminController {
             require_once '../app/models/AdminModel.php';
             $adminModel = new AdminModel($this->db);
             if ($adminModel->addPlace($data)) {
-                header("Location: " . URLROOT . "/admin");
-                exit();
+                $redirect = ($_POST['category_id'] == 2) ? '/admin/hotels' : '/admin';
+                header("Location: " . URLROOT . $redirect);
             }
         }
     }
 
     public function edit($id) {
-        require_once '../app/models/AdminModel.php';
-        $adminModel = new AdminModel($this->db);
-        $place = $adminModel->getPlaceById($id);
-        if (!$place) die("Không tìm thấy địa danh!");
-        $data = ['place' => $place];
-        require_once '../app/views/admin/edit.php';
-    }
+    require_once '../app/models/AdminModel.php';
+    $adminModel = new AdminModel($this->db);
+    
+    // 1. Lấy dữ liệu của địa danh hiện tại
+    $place = $adminModel->getPlaceById($id);
+    if (!$place) die("Không tìm thấy địa danh!");
+
+    // 2. Lấy danh sách tất cả danh mục để hiển thị trong select box
+    $stmt = $this->db->query("SELECT * FROM categories");
+    $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 3. Truyền cả 2 dữ liệu sang View
+    $data = [
+        'place' => $place,
+        'categories' => $categories
+    ];
+    
+    require_once '../app/views/admin/edit.php';
+}
 
     public function update($id) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -96,10 +115,12 @@ class AdminController {
 
         // BẠN CẦN CẬP NHẬT MẢNG NÀY ĐẦY ĐỦ NHƯ SAU:
         $data = [
+            
             'category_id' => $_POST['category_id'],
             'lat'         => $_POST['lat'],
             'lng'         => $_POST['lng'],
             'image'       => $image_name,
+            'is_special' => isset($_POST['is_special']) ? 1 : 0,
             
             // Tiếng Việt
             'name_vi'     => $_POST['name_vi'],
@@ -129,25 +150,11 @@ class AdminController {
     public function delete($id) {
         require_once '../app/models/AdminModel.php';
         $adminModel = new AdminModel($this->db);
-        if ($adminModel->deletePlace($id)) {
-            header("Location: " . URLROOT . "/admin");
-            exit();
-        } else {
-            die("Không thể xóa địa danh");
-        }
+        if ($adminModel->deletePlace($id)) { header("Location: " . $_SERVER['HTTP_REFERER']); }
     }
-
     // --- QUẢN LÝ ĐẶT CHỖ (ĐÃ RÚT GỌN) ---
     
-    // 1. Hiển thị danh sách rút gọn
-    public function bookings() {
-        require_once '../app/models/AdminModel.php';
-        $adminModel = new AdminModel($this->db);
-        $lang = $_SESSION['lang'] ?? 'vi';
-        $bookings = $adminModel->getAllBookings($lang);
-        $data = ['bookings' => $bookings];
-        require_once '../app/views/admin/bookings.php';
-    }
+   
 
     // 2. Xem chi tiết thông tin khách hàng (Để lấy SĐT, Email...)
     public function booking_detail($id) {
@@ -283,6 +290,5 @@ public function store_user() {
     }
  }
 
- 
 
 }

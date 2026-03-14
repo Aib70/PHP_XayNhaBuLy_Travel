@@ -1,6 +1,8 @@
 <div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
-    <h1 style="text-align: center; margin-bottom: 30px; color: #333;"><?php echo $data['title']; ?></h1>
-
+    <h1 class="text-center my-4">
+    <?php echo $data['title']; ?>
+    </h1>
+    
     <?php if(empty($data['places'])): ?>
         <p style="text-align: center;">Chưa có dữ liệu cho danh mục này.</p>
     <?php else: ?>

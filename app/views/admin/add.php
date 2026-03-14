@@ -74,7 +74,16 @@
                 <textarea name="desc_en" rows="4" placeholder="Description"></textarea>
                 <input type="text" name="addr_en" placeholder="Address">
             </div>
-
+<div style="background: #e8f4fd; padding: 20px; border-radius: 10px; border: 1px solid #b8daff; margin: 20px 0;">
+    <h3 style="margin-top: 0; color: #004085;">🌟 Phân loại hiển thị</h3>
+    <label style="display: flex; align-items: center; cursor: pointer; font-size: 16px;">
+        <input type="checkbox" name="is_special" value="1" style="width: 22px; height: 22px; margin-right: 12px;">
+        <strong>Đánh dấu là "Điểm Đến Đặc Sắc"</strong>
+    </label>
+    <p style="margin: 10px 0 0 34px; font-size: 0.9rem; color: #555;">
+        (Nếu tích chọn, địa danh này sẽ xuất hiện ở cả menu <b>Địa danh</b> và menu <b>Các lễ hội/Đặc sắc</b>)
+    </p>
+</div>
             <button type="submit">LƯU ĐỊA DANH VÀ ẢNH</button>
         </form>
         

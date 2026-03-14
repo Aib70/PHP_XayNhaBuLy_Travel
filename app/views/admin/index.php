@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Hệ thống Quản trị - Xayabury Travel</title>
     <style>
-        /* TỔNG THỂ */
+        /* ... Các style cũ của bạn giữ nguyên ... */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
@@ -14,7 +14,6 @@
         .container { padding: 30px; max-width: 1300px; margin: auto; }
         h1 { color: #2c3e50; font-size: 24px; margin-bottom: 25px; }
 
-        /* THANH NAV TRÊN CÙNG */
         .admin-nav {
             background: #2c3e50;
             color: white;
@@ -28,7 +27,6 @@
         .admin-nav a:hover { color: white; }
         .btn-logout { background: #e74c3c; color: white !important; padding: 7px 15px; border-radius: 5px; }
 
-        /* CÁC NÚT HÀNH ĐỘNG CHÍNH (Thêm, Bookings...) */
         .header-actions { display: flex; align-items: center; margin-bottom: 20px; gap: 10px; }
         .btn-main {
             text-decoration: none;
@@ -44,11 +42,10 @@
         .btn-users { background: #6f42c1; }
         .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        /* BẢNG DỮ LIỆU HIỆN ĐẠI */
         .admin-table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 12px; /* Khoảng cách giữa các dòng */
+            border-spacing: 0 12px;
             margin-top: 10px;
         }
         .admin-table thead th {
@@ -77,18 +74,15 @@
             border-top: 1px solid #f1f1f1;
             border-bottom: 1px solid #f1f1f1;
         }
-        /* Bo góc cho dòng dữ liệu */
         .admin-table td:first-child { border-left: 1px solid #f1f1f1; border-radius: 10px 0 0 10px; text-align: center; }
         .admin-table td:last-child { border-right: 1px solid #f1f1f1; border-radius: 0 10px 10px 0; }
 
-        /* THÀNH PHẦN BÊN TRONG TD */
         .badge-id { background: #e9ecef; padding: 5px 10px; border-radius: 5px; font-weight: bold; color: #495057; }
         .name-container div { margin-bottom: 3px; }
         .name-vi { font-weight: bold; color: #2c3e50; }
         .name-lo { font-size: 13px; color: #7f8c8d; }
         .name-en { font-size: 13px; color: #3498db; }
 
-        /* NÚT THAO TÁC TRONG BẢNG */
         .btn-action {
             text-decoration: none;
             padding: 6px 12px;
@@ -99,6 +93,16 @@
             display: inline-block;
             border: 1px solid transparent;
         }
+        /* Style cho nút Thêm Khách Sạn mới */
+        .btn-add-hotel-small { 
+            color: #f39c12; 
+            border-color: #f39c12; 
+        }
+        .btn-add-hotel-small:hover { 
+            background: #f39c12; 
+            color: white; 
+        }
+
         .btn-view { color: #28a745; border-color: #28a745; }
         .btn-view:hover { background: #28a745; color: white; }
         .btn-edit { color: #007bff; border-color: #007bff; }
@@ -139,6 +143,7 @@
             <a href="<?php echo URLROOT; ?>/admin/add" class="btn-main btn-add">+ Thêm địa danh mới</a>
             <a href="<?php echo URLROOT; ?>/admin/bookings" class="btn-main btn-bookings">📋 Danh sách đặt chỗ</a>
             <a href="<?php echo URLROOT; ?>/admin/users" class="btn-main btn-users">👥 Quản lý người dùng</a>
+            <a href="<?php echo URLROOT; ?>/admin/hotels" class="btn-main" style="background-color: #f39c12;">🏨 Quản lý khách sạn</a>
         </div>
 
         <table class="admin-table">
@@ -147,8 +152,7 @@
                     <th width="80">ID</th>
                     <th>Thông tin địa danh</th>
                     <th width="180">Tọa độ (Lat, Lng)</th>
-                    <th width="280">Thao tác</th>
-                </tr>
+                    <th width="350">Thao tác</th> </tr>
             </thead>
             <tbody>
                 <?php if(!empty($data['places'])): ?>
@@ -165,17 +169,24 @@
                             &nbsp;&nbsp;&nbsp;&nbsp;<?php echo number_format($place['longitude'], 6); ?>
                         </td>
                         <td>
-                            <div>
-                                <a href="<?php echo URLROOT; ?>/place/view/<?php echo $place['id']; ?>" 
-                                   class="btn-action btn-view" target="_blank">Xem</a>
-                                <a href="<?php echo URLROOT; ?>/admin/edit/<?php echo $place['id']; ?>" 
-                                   class="btn-action btn-edit">Sửa</a>
-                                <a href="<?php echo URLROOT; ?>/admin/delete/<?php echo $place['id']; ?>" 
-                                   class="btn-action btn-delete" 
-                                   onclick="return confirm('Xác nhận xóa địa danh này?')">Xóa</a>
-                            </div>
-                            <a href="<?php echo URLROOT; ?>/admin/forum" class="btn-forum-small">📢 Quản lý Diễn đàn</a>
-                        </td>
+    <div>
+        <?php if(isset($data['is_hotel_page']) && $data['is_hotel_page'] === true): ?>
+            <a href="<?php echo URLROOT; ?>/admin/add_hotel" 
+               class="btn-action btn-add-hotel-small">🏨 Thêm KS</a>
+        <?php endif; ?>
+
+        <a href="<?php echo URLROOT; ?>/place/view/<?php echo $place['id']; ?>" 
+           class="btn-action btn-view" target="_blank">Xem</a>
+           
+        <a href="<?php echo URLROOT; ?>/admin/edit/<?php echo $place['id']; ?>" 
+           class="btn-action btn-edit">Sửa</a>
+           
+        <a href="<?php echo URLROOT; ?>/admin/delete/<?php echo $place['id']; ?>" 
+           class="btn-action btn-delete" 
+           onclick="return confirm('Xác nhận xóa?')">Xóa</a>
+    </div>
+    <a href="<?php echo URLROOT; ?>/admin/forum" class="btn-forum-small">📢 Quản lý Diễn đàn</a>
+</td>
                     </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

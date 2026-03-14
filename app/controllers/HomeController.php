@@ -8,25 +8,29 @@ class HomeController {
 
   public function index() {
     $lang = $_SESSION['lang'] ?? 'vi';
-    $keyword = $_GET['search'] ?? ''; // Lấy từ khóa từ thanh địa chỉ
-
     require_once '../app/models/PlaceModel.php';
     $placeModel = new PlaceModel($this->db);
 
-    if (!empty($keyword)) {
-        // Nếu có từ khóa, thực hiện tìm kiếm
-        $places = $placeModel->searchPlaces($keyword, $lang);
-    } else {
-        // Nếu không, hiện danh sách mặc định
-        $places = $placeModel->getPlacesHome($lang);
-    }
+    // Lấy Địa danh đặc sắc (Không bao gồm category 2)
+    $sql_p = "SELECT p.*, pt.name FROM places p JOIN place_translations pt ON p.id = pt.place_id 
+              WHERE pt.lang_code = ? AND p.is_special = 1 AND p.category_id != 2";
+    $stmt_p = $this->db->prepare($sql_p);
+    $stmt_p->execute([$lang]);
+    $specialPlaces = $stmt_p->fetchAll(PDO::FETCH_ASSOC);
+
+    // Lấy Khách sạn đặc sắc (Chỉ category 2)
+    $sql_h = "SELECT p.*, pt.name FROM places p JOIN place_translations pt ON p.id = pt.place_id 
+              WHERE pt.lang_code = ? AND p.is_special = 1 AND p.category_id = 2";
+    $stmt_h = $this->db->prepare($sql_h);
+    $stmt_h->execute([$lang]);
+    $specialHotels = $stmt_h->fetchAll(PDO::FETCH_ASSOC);
 
     $data = [
-        'places' => $places,
-        'keyword' => $keyword
+        'special_places' => $specialPlaces,
+        'special_hotels' => $specialHotels,
+        'lang' => $lang
     ];
 
-    require_once '../app/views/inc/header.php';
     require_once '../app/views/home/index.php';
 }
 

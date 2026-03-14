@@ -115,20 +115,32 @@
         </div>
     </div>
     
+    
+
     <hr style="margin: 60px 0; border: 0; border-top: 1px solid #eee;">
     <h2 style="text-align: center; margin-bottom: 40px;"><?= $data['text']['related']; ?></h2>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
-        <?php foreach($data['related'] as $rel): ?>
-            <a href="<?= URLROOT; ?>/place/view/<?= $rel['id']; ?>" style="text-decoration: none; color: inherit;">
-                <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                    <img src="<?= URLROOT; ?>/public/img/places/<?= $rel['image_main']; ?>" style="width: 100%; height: 180px; object-fit: cover;">
-                    <div style="padding: 20px; text-align: center; font-weight: bold;">
-                        <?= htmlspecialchars($rel['name_' . $data['lang']] ?? ($rel['name'] ?? 'Unnamed Place')); ?>
-                    </div>
+    <?php 
+    // Thêm kiểm tra isset và is_array
+    if(isset($data['related']) && is_array($data['related'])): 
+        foreach($data['related'] as $rel): 
+    ?>
+        <a href="<?= URLROOT; ?>/place/view/<?= $rel['id']; ?>" style="text-decoration: none; color: inherit;">
+            <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                <img src="<?= URLROOT; ?>/public/img/places/<?= $rel['image_main']; ?>" style="width: 100%; height: 180px; object-fit: cover;">
+                <div style="padding: 20px; text-align: center; font-weight: bold;">
+                    <?= htmlspecialchars($rel['name_' . $data['lang']] ?? ($rel['name'] ?? 'Unnamed Place')); ?>
                 </div>
-            </a>
-        <?php endforeach; ?>
-    </div>
+            </div>
+        </a>
+    <?php 
+        endforeach; 
+    else: 
+        // Hiển thị thông báo nếu không có dữ liệu (tùy chọn)
+        echo "<p style='text-align:center; grid-column: 1/-1; color:#999;'>Không có địa danh liên quan.</p>";
+    endif; 
+    ?>
+</div>
     
 </div>
 
