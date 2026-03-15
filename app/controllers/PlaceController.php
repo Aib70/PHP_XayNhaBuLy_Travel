@@ -9,8 +9,8 @@ class PlaceController {
         $this->placeModel = new PlaceModel($this->db);
     }
 
-    // 1. Xem chi tiết một địa danh
-    // 1. Xem chi tiết một địa danh hoặc khách sạn
+
+         // 1. Xem chi tiết một địa danh hoặc khách sạn
     public function view($id) {
     $lang = $_SESSION['lang'] ?? 'vi'; 
     require_once '../app/models/AdminModel.php';
@@ -35,7 +35,7 @@ class PlaceController {
                          (($lang == 'lo') ? 'ໂຮງແຮມທີ່ກ່ຽວຂ້ອງ' : 'Related Hotels');
     } else {
         // Nếu là địa danh thường (LỖI THƯỜNG Ở ĐÂY VÌ QUÊN GỌI HÀM)
-        $related = $adminModel->getRelatedPlaces($id, $lang);
+        $related = $adminModel->getRelatedPlaces($id, $lang, $place['category_id']);
         $related_title = ($lang == 'vi') ? 'Địa danh liên quan' : 
                          (($lang == 'lo') ? 'ສະຖານທີ່ທີ່ກ່ຽວຂ້ອງ' : 'Related Places');
     }
@@ -57,7 +57,8 @@ class PlaceController {
             'date_label' => 'Ngày dự kiến tham quan:', 'btn_book' => 'GỬI YÊU CẦU ĐẶT CHỖ',
             'comment_title' => 'Bình luận & Đánh giá', 'comment_placeholder' => 'Viết bình luận của bạn tại đây...',
             'btn_comment' => 'Gửi bình luận', 'login_req' => 'Vui lòng đăng nhập để đặt chỗ.',
-            'login_btn' => 'Đăng nhập ngay', 'subject' => 'Tiêu đề bình luận'
+            'login_btn' => 'Đăng nhập ngay', 'subject' => 'Tiêu đề bình luận',
+            'special_title' => 'Di Sản Văn Hóa Voi Xayabury'
         ],
         'lo' => [
             'intro' => 'ກ່ຽວກັບ', 'address' => 'ທີ່ຢູ່', 'location' => 'ແຜນທີ່',
@@ -65,7 +66,8 @@ class PlaceController {
             'date_label' => 'ວັນທີຄາດວ່າຈະມາຢ້ຽມຢາມ:', 'btn_book' => 'ສົ່ງຄຳຮ້ອງຈອງ',
             'comment_title' => 'ຄຳຄິດເຫັນ ແລະ ການໃຫ້ຄະແນນ', 'comment_placeholder' => 'ຂຽນຄຳຄິດເຫັນຂອງທ່ານທີ່ນີ້...',
             'btn_comment' => 'ສົ່ງຄຳຮ້ອງຈອງ', 'login_req' => 'ກະລຸນາເຂົ້າສູ່ລະບົບເພື່ອຈອງ.',
-            'login_btn' => 'ເຂົ້າສູ່ລະບົບດຽວນີ້', 'subject' => 'ຫົວຂໍ້ຄຳຄິດເຫັນ'
+            'login_btn' => 'ເຂົ້າສູ່ລະບົບດຽວນີ້', 'subject' => 'ຫົວຂໍ້ຄຳຄິດເຫັນ',
+            'special_title' => 'ມໍລະດົກວັດທະນະທຳຊ້າງ ໄຊຍະບູລີ'
         ],
         'en' => [
             'intro' => 'About', 'address' => 'Address', 'location' => 'Location',
@@ -73,7 +75,8 @@ class PlaceController {
             'date_label' => 'Expected date:', 'btn_book' => 'SUBMIT REQUEST',
             'comment_title' => 'Comments & Reviews', 'comment_placeholder' => 'Write your comment here...',
             'btn_comment' => 'Post Comment', 'login_req' => 'Please login to book a trip.',
-            'login_btn' => 'Login now', 'subject' => 'Comment Subject'
+            'login_btn' => 'Login now', 'subject' => 'Comment Subject',
+            'special_title' => 'Xayabury Elephant Cultural Heritage'
         ]
     ];
 

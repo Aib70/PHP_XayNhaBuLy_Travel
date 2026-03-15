@@ -102,31 +102,30 @@ class AdminModel {
     }
 
     // Lấy địa danh liên quan
-    public function getRelatedPlaces($current_id, $lang) {
+    public function getRelatedPlaces($current_id, $lang, $cat_id) {
+    try {
+        // Thêm điều kiện: p.category_id = :cat_id
+        $sql = "SELECT p.id, p.image_main, pt.name
+                FROM places p
+                JOIN place_translations pt ON p.id = pt.place_id
+                WHERE pt.lang_code = :lang 
+                AND p.category_id = :cat_id
+                AND p.id != :current_id
+                ORDER BY RAND()
+                LIMIT 3";
 
-        try {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([
+            'lang' => $lang,
+            'cat_id' => $cat_id, // Lọc theo danh mục của bài đang xem
+            'current_id' => $current_id
+        ]);
 
-            $sql = "SELECT p.id, p.image_main, pt.name
-                    FROM places p
-                    JOIN place_translations pt ON p.id = pt.place_id
-                    WHERE pt.lang_code = :lang 
-                    AND p.id != :current_id
-                    ORDER BY RAND()
-                    LIMIT 3";
-
-            $stmt = $this->db->prepare($sql);
-
-            $stmt->execute([
-                'lang' => $lang,
-                'current_id' => $current_id
-            ]);
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        } catch (Exception $e) {
-            return [];
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        return [];
     }
+}
 
     // Lấy địa danh theo danh mục
     public function getPlacesByCategory($cat_id, $lang) {

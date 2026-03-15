@@ -202,6 +202,24 @@
             </label>
         </div>
 
+        <div class="section-title">💰 Thông tin đặt phòng</div>
+<div style="display: flex; gap: 20px;">
+    <div style="flex: 1;">
+        <label>Giá thuê (VNĐ/Đêm):</label>
+        <input type="number" name="price" placeholder="Ví dụ: 500000" class="form-control">
+    </div>
+    <div style="flex: 1;">
+        <label>Hạng sao:</label>
+        <select name="star_rating" class="form-control">
+            <option value="1">1 Sao ⭐</option>
+            <option value="2">2 Sao ⭐⭐</option>
+            <option value="3">3 Sao ⭐⭐⭐</option>
+            <option value="4">4 Sao ⭐⭐⭐⭐</option>
+            <option value="5" selected>5 Sao ⭐⭐⭐⭐⭐</option>
+        </select>
+    </div>
+</div>
+
         <button type="submit" class="btn-submit">LƯU KHÁCH SẠN VÀ ẢNH</button>
         
         <a href="<?php echo URLROOT; ?>/admin/hotels" class="back-link">⬅ Quay lại danh sách quản lý khách sạn</a>
