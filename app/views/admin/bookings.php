@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>Quản lý Đặt chỗ - Xayabury Travel</title>
     <style>
+    .status-badge { padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+    .pending { background: #ffeeba; color: #856404; }   /* Vàng */
+    .confirmed { background: #d4edda; color: #155724; } /* Xanh lá */
+    .cancelled { background: #f8d7da; color: #721c24; } /* Đỏ */
+</style>
+    <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 1100px; margin: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -18,38 +24,43 @@
 <body>
     <div class="container">
         <a href="<?php echo URLROOT; ?>/admin" class="btn-back">⬅ Quay lại Quản lý</a>
-        <h1>Danh sách Đặt chỗ</h1>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Khách hàng</th>
-                    <th>Địa danh</th>
-                    <th>Ngày dự kiến</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if(!empty($data['bookings'])): foreach($data['bookings'] as $b): ?>
-                <tr>
-                    <td><?php echo $b['id']; ?></td>
-                    <td><strong><?php echo htmlspecialchars($b['user_name']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($b['place_name']); ?></td>
-                    <td><?php echo date('d/m/Y', strtotime($b['booking_date'])); ?></td>
-                    <td>
-                        <a href="<?php echo URLROOT; ?>/admin/booking_detail/<?php echo $b['id']; ?>" class="btn btn-view">👁 Xem</a>
-                        
-                        <a href="<?php echo URLROOT; ?>/admin/delete_booking/<?php echo $b['id']; ?>" 
-                           class="btn btn-delete" 
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa đơn đặt chỗ này?')">🗑 Xóa</a>
-                    </td>
-                </tr>
-                <?php endforeach; else: ?>
-                    <tr><td colspan="5" style="text-align:center;">Chưa có dữ liệu.</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <h2>Quản lý Đặt chỗ</h2>
+<table border="1" width="100%" style="border-collapse: collapse;">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Khách hàng</th>
+            <th>Điện thoại</th>
+            <th>Địa danh</th>
+            <th>Ngày dự kiến</th>
+            <th>Ngày đặt</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($data['bookings'] as $row): ?>
+<tr>
+    <td><?= $row['id'] ?></td>
+    
+    <td><?= htmlspecialchars($row['user_name'] ?? 'N/A') ?></td>
+    
+    <td><?= htmlspecialchars($row['phone'] ?? 'N/A') ?></td>
+    
+    <td><?= htmlspecialchars($row['user_email'] ?? 'N/A') ?></td>
+    
+    <td><?= htmlspecialchars($row['booking_date'] ?? 'N/A') ?></td>
+    
+    <td>
+        <span class="status-badge <?= $row['status'] ?>">
+            <?= ucfirst($row['status']) ?>
+        </span>
+    </td>
+    
+    <td><?= $row['created_at'] ?></td>
+</tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+        
     </div>
 </body>
 </html>

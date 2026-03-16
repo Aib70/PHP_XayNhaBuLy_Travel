@@ -27,12 +27,19 @@ class AdminController {
 
     // Trang Quản lý KHÁCH SẠN
     public function hotels() {
-        require_once '../app/models/AdminModel.php';
-        $adminModel = new AdminModel($this->db);
-        $hotels = $adminModel->getOnlyHotels(); 
-        $data = ['places' => $hotels, 'title' => 'Quản lý Khách sạn', 'is_hotel_page' => true];
-        require_once '../app/views/admin/index.php';
-    }
+    require_once '../app/models/AdminModel.php';
+    $adminModel = new AdminModel($this->db);
+    
+    // Lấy danh sách khách sạn từ model (Category ID = 2)
+    $hotels = $adminModel->getOnlyHotels(); 
+
+    $data = [
+        'hotels' => $hotels
+    ];
+
+    // Thay đổi dòng này để gọi đúng file view mới tạo ở Bước 1
+    require_once '../app/views/admin/hotels.php'; 
+}
 
     // Trang thêm Khách sạn (Giao diện riêng)
     public function add_hotel() {
@@ -66,10 +73,12 @@ class AdminController {
             ];
 
             require_once '../app/models/AdminModel.php';
-            $adminModel = new AdminModel($this->db);
-            if ($adminModel->addPlace($data)) {
-                $redirect = ($_POST['category_id'] == 2) ? '/admin/hotels' : '/admin';
-                header("Location: " . URLROOT . $redirect);
+        $adminModel = new AdminModel($this->db);
+        if ($adminModel->addPlace($data)) {
+            $redirect = ($_POST['category_id'] == 2) ? '/admin/hotels' : '/admin/index';
+            // Thêm ?msg=added vào cuối đường dẫn
+            header("Location: " . URLROOT . $redirect . "?msg=added");
+            exit();
             }
         }
     }
@@ -141,17 +150,25 @@ class AdminController {
         require_once '../app/models/AdminModel.php';
         $adminModel = new AdminModel($this->db);
         if ($adminModel->updatePlace($id, $data)) {
-            header("Location: " . URLROOT . "/admin");
+            // Thêm ?msg=updated để hiện thông báo màu xanh
+            header("Location: " . URLROOT . "/admin/index?msg=updated");
             exit();
         }
     }
 }
 
     public function delete($id) {
-        require_once '../app/models/AdminModel.php';
-        $adminModel = new AdminModel($this->db);
-        if ($adminModel->deletePlace($id)) { header("Location: " . $_SERVER['HTTP_REFERER']); }
+    require_once '../app/models/AdminModel.php';
+    $adminModel = new AdminModel($this->db);
+
+    if ($adminModel->deletePlace($id)) { 
+        // Thêm ?msg=deleted để hiện thông báo màu đỏ
+        header("Location: " . URLROOT . "/admin/index?msg=deleted"); 
+        exit(); 
+    } else {
+        die("Lỗi: Không thể xóa địa danh này trong Database.");
     }
+}
     // --- QUẢN LÝ ĐẶT CHỖ (ĐÃ RÚT GỌN) ---
     
    

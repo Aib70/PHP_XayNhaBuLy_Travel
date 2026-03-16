@@ -2,9 +2,9 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ thống Quản trị - Xayabury Travel</title>
     <style>
-        /* ... Các style cũ của bạn giữ nguyên ... */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, sans-serif; 
@@ -27,7 +27,7 @@
         .admin-nav a:hover { color: white; }
         .btn-logout { background: #e74c3c; color: white !important; padding: 7px 15px; border-radius: 5px; }
 
-        .header-actions { display: flex; align-items: center; margin-bottom: 20px; gap: 10px; }
+        .header-actions { display: flex; align-items: center; margin-bottom: 20px; gap: 10px; flex-wrap: wrap; }
         .btn-main {
             text-decoration: none;
             padding: 10px 20px;
@@ -77,7 +77,9 @@
         .admin-table td:first-child { border-left: 1px solid #f1f1f1; border-radius: 10px 0 0 10px; text-align: center; }
         .admin-table td:last-child { border-right: 1px solid #f1f1f1; border-radius: 0 10px 10px 0; }
 
-        .badge-id { background: #e9ecef; padding: 5px 10px; border-radius: 5px; font-weight: bold; color: #495057; }
+        /* Style cho cột Số thứ tự */
+        .badge-stt { background: #34495e; padding: 5px 12px; border-radius: 5px; font-weight: bold; color: #fff; }
+        
         .name-container div { margin-bottom: 3px; }
         .name-vi { font-weight: bold; color: #2c3e50; }
         .name-lo { font-size: 13px; color: #7f8c8d; }
@@ -93,16 +95,6 @@
             display: inline-block;
             border: 1px solid transparent;
         }
-        /* Style cho nút Thêm Khách Sạn mới */
-        .btn-add-hotel-small { 
-            color: #f39c12; 
-            border-color: #f39c12; 
-        }
-        .btn-add-hotel-small:hover { 
-            background: #f39c12; 
-            color: white; 
-        }
-
         .btn-view { color: #28a745; border-color: #28a745; }
         .btn-view:hover { background: #28a745; color: white; }
         .btn-edit { color: #007bff; border-color: #007bff; }
@@ -122,6 +114,45 @@
         }
     </style>
 </head>
+
+<style>
+    .alert-toast {
+        position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px;
+        color: white; font-weight: bold; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        animation: slideIn 0.5s ease forwards;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .alert-success { background: #2ecc71; } /* Màu xanh khi thành công */
+    .alert-danger { background: #e74c3c; }  /* Màu đỏ khi xóa hoặc lỗi */
+    
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+</style>
+
+<?php if(isset($_GET['msg'])): ?>
+    <div id="toast" class="alert-toast <?= (strpos($_GET['msg'], 'deleted') !== false) ? 'alert-danger' : 'alert-success' ?>">
+        <span>
+            <?php 
+                if($_GET['msg'] == 'added') echo "✅ Đã thêm địa danh mới thành công!";
+                if($_GET['msg'] == 'updated') echo "📝 Đã cập nhật thông tin địa danh!";
+                if($_GET['msg'] == 'deleted') echo "🗑️ Đã xóa địa danh khỏi hệ thống!";
+            ?>
+        </span>
+    </div>
+
+    <script>
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            const toast = document.getElementById('toast');
+            if(toast) {
+                toast.style.transition = '0.5s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 3000);
+    </script>
+<?php endif; ?>
+
 <body>
 
     <div class="admin-nav">
@@ -149,44 +180,46 @@
         <table class="admin-table">
             <thead>
                 <tr>
-                    <th width="80">ID</th>
-                    <th>Thông tin địa danh</th>
+                    <th width="80">STT</th> <th>Thông tin địa danh</th>
                     <th width="180">Tọa độ (Lat, Lng)</th>
-                    <th width="350">Thao tác</th> </tr>
+                    <th width="350">Thao tác</th>
+                </tr>
             </thead>
             <tbody>
                 <?php if(!empty($data['places'])): ?>
-                    <?php foreach($data['places'] as $place): ?>
+                    <?php 
+                        $stt = 1; // Khởi tạo biến đếm số thứ tự
+                        foreach($data['places'] as $place): 
+                    ?>
                     <tr>
-                        <td><span class="badge-id"><?php echo $place['id']; ?></span></td>
+                        <td><span class="badge-stt"><?php echo $stt++; ?></span></td>
+                        
                         <td class="name-container">
                             <div class="name-vi"><?php echo htmlspecialchars($place['name_vi'] ?? 'Chưa có'); ?></div>
                             <div class="name-lo"><?php echo htmlspecialchars($place['name_lo'] ?? 'ຍັງບໍ່ມີ'); ?></div>
                             <div class="name-en">🇺🇸 <?php echo htmlspecialchars($place['name_en'] ?? 'N/A'); ?></div>
+                            <small style="color: #ccc; font-size: 10px;">ID gốc: #<?php echo $place['id']; ?></small>
                         </td>
+
                         <td style="font-family: monospace; color: #666; font-size: 12px;">
                             📍 <?php echo number_format($place['latitude'], 6); ?>,<br>
                             &nbsp;&nbsp;&nbsp;&nbsp;<?php echo number_format($place['longitude'], 6); ?>
                         </td>
-                        <td>
-    <div>
-        <?php if(isset($data['is_hotel_page']) && $data['is_hotel_page'] === true): ?>
-            <a href="<?php echo URLROOT; ?>/admin/add_hotel" 
-               class="btn-action btn-add-hotel-small">🏨 Thêm KS</a>
-        <?php endif; ?>
 
-        <a href="<?php echo URLROOT; ?>/place/view/<?php echo $place['id']; ?>" 
-           class="btn-action btn-view" target="_blank">Xem</a>
-           
-        <a href="<?php echo URLROOT; ?>/admin/edit/<?php echo $place['id']; ?>" 
-           class="btn-action btn-edit">Sửa</a>
-           
-        <a href="<?php echo URLROOT; ?>/admin/delete/<?php echo $place['id']; ?>" 
-           class="btn-action btn-delete" 
-           onclick="return confirm('Xác nhận xóa?')">Xóa</a>
-    </div>
-    <a href="<?php echo URLROOT; ?>/admin/forum" class="btn-forum-small">📢 Quản lý Diễn đàn</a>
-</td>
+                        <td>
+                            <div>
+                                <a href="<?php echo URLROOT; ?>/place/view/<?php echo $place['id']; ?>" 
+                                   class="btn-action btn-view" target="_blank">Xem</a>
+                                   
+                                <a href="<?php echo URLROOT; ?>/admin/edit/<?php echo $place['id']; ?>" 
+                                   class="btn-action btn-edit">Sửa</a>
+                                   
+                                <a href="<?php echo URLROOT; ?>/admin/delete/<?php echo $place['id']; ?>" 
+                                   class="btn-action btn-delete" 
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa không? Hành động này sẽ không thể hoàn tác!')">Xóa</a>
+                            </div>
+                            <a href="<?php echo URLROOT; ?>/admin/forum/<?php echo $place['id']; ?>" class="btn-forum-small">📢 Quản lý Diễn đàn</a>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 <?php else: ?>

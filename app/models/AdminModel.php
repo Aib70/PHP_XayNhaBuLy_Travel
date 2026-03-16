@@ -60,10 +60,14 @@ class AdminModel {
     }
 
     // 5. Hàm Xóa
-    public function deletePlace($id) {
-        $this->db->prepare("DELETE FROM place_translations WHERE place_id=?")->execute([$id]);
-        return $this->db->prepare("DELETE FROM places WHERE id=?")->execute([$id]);
-    }
+   public function deletePlace($id) {
+
+    $sql = "DELETE FROM places WHERE id = :id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute(['id' => $id]);
+
+    return true;
+}
 
     // 3. Lấy chi tiết một địa danh theo ID (Dùng để Sửa)
     public function getPlaceById($id) {
@@ -228,6 +232,22 @@ public function getRelatedHotels($current_id, $lang) {
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
+        return [];
+    }
+}
+
+public function getAllBookings() {
+    try {
+        // Lấy thông tin đặt chỗ kèm tên địa danh/khách sạn
+        $sql = "SELECT b.*, pt.name as place_name 
+                FROM bookings b
+                LEFT JOIN place_translations pt ON b.place_id = pt.place_id 
+                WHERE pt.lang_code = 'vi'
+                ORDER BY b.created_at DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
         return [];
     }
 }
