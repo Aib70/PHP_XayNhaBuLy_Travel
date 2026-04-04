@@ -8,27 +8,43 @@ class HomeController {
 
   public function index() {
     $lang = $_SESSION['lang'] ?? 'vi';
+    $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+
     require_once '../app/models/PlaceModel.php';
     $placeModel = new PlaceModel($this->db);
 
-    // Lấy Địa danh đặc sắc (Không bao gồm category 2)
-    $sql_p = "SELECT p.*, pt.name FROM places p JOIN place_translations pt ON p.id = pt.place_id 
-              WHERE pt.lang_code = ? AND p.is_special = 1 AND p.category_id != 2";
-    $stmt_p = $this->db->prepare($sql_p);
-    $stmt_p->execute([$lang]);
-    $specialPlaces = $stmt_p->fetchAll(PDO::FETCH_ASSOC);
+    // 1. Khởi tạo câu SQL cơ bản
+    $sql_p = "SELECT p.*, pt.name, pt.description 
+              FROM places p 
+              LEFT JOIN place_translations pt ON p.id = pt.place_id AND pt.lang_code = ?
+              WHERE 1=1"; // Mẹo 1=1 để dễ dàng nối thêm điều kiện AND phía sau
 
-    // Lấy Khách sạn đặc sắc (Chỉ category 2)
-    $sql_h = "SELECT p.*, pt.name FROM places p JOIN place_translations pt ON p.id = pt.place_id 
-              WHERE pt.lang_code = ? AND p.is_special = 1 AND p.category_id = 2";
-    $stmt_h = $this->db->prepare($sql_h);
-    $stmt_h->execute([$lang]);
-    $specialHotels = $stmt_h->fetchAll(PDO::FETCH_ASSOC);
+    // 2. Xử lý Logic tìm kiếm
+    if (!empty($keyword)) {
+        // KHI CÓ TÌM KIẾM: Tìm trên toàn bộ hệ thống (bỏ qua is_special)
+        $sql_p .= " AND (pt.name LIKE ? OR pt.description LIKE ?)";
+    } else {
+        // KHI KHÔNG TÌM KIẾM: Chỉ hiện những cái được đánh dấu đặc sắc
+        $sql_p .= " AND p.is_special = 1 AND p.category_id != 2";
+    }
+
+    $sql_p .= " ORDER BY p.id DESC";
+    $stmt_p = $this->db->prepare($sql_p);
+
+    // 3. Thực thi SQL với tham số tương ứng
+    if (!empty($keyword)) {
+        $searchQuery = "%$keyword%";
+        $stmt_p->execute([$lang, $searchQuery, $searchQuery]);
+    } else {
+        $stmt_p->execute([$lang]);
+    }
+
+    $specialPlaces = $stmt_p->fetchAll(PDO::FETCH_ASSOC);
 
     $data = [
         'special_places' => $specialPlaces,
-        'special_hotels' => $specialHotels,
-        'lang' => $lang
+        'lang'           => $lang,
+        'keyword'        => $keyword
     ];
 
     require_once '../app/views/home/index.php';

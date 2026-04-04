@@ -166,19 +166,20 @@
 
     <section style="padding:30px 0; text-align:center;">
         <h2 style="color:#333">
-            <?php
-            echo ($_SESSION['lang']=='vi') ? "Điểm Đến Đặc Sắc" :
-                (($_SESSION['lang']=='lo') ? "ສະຖານທີ່ເດັ່ນ" : "Featured Destinations");
-            ?>
-        </h2>
+    <?php if(!empty($data['keyword'])): ?>
+        <?php echo ($lang == 'vi') ? "Kết quả tìm kiếm" : "Search Results"; ?>
+    <?php else: ?>
+        <?php echo ($lang == 'vi') ? "Điểm Đến Đặc Sắc" : "Featured Destinations"; ?>
+    <?php endif; ?>
+</h2>
         <div style="width:80px;height:4px;background:#ffcc00;margin:20px auto"></div>
     </section>
 
 </div>
 
 <div class="place-grid">
-    <?php if(!empty($data['places'])): ?>
-        <?php foreach($data['places'] as $place): ?>
+    <?php if(!empty($data['special_places'])): ?>
+        <?php foreach($data['special_places'] as $place): ?>
             <div class="place-card">
                 <img
                     src="<?php echo URLROOT;?>/public/img/places/<?php echo $place['image_main'];?>"
@@ -207,6 +208,8 @@
                 </div>
             </div>
         <?php endforeach; ?>
+    <?php else: ?>
+        <p style="text-align:center; grid-column: 1/-1;">Chưa có địa danh đặc sắc nào được tìm thấy.</p>
     <?php endif; ?>
 </div>
 

@@ -307,6 +307,24 @@ public function store_user() {
     }
  }
 
- 
+ // 1. Hiển thị danh sách tất cả đơn đặt chỗ (Đây là hàm bạn đang thiếu)
+    public function bookings() {
+        // Truy vấn lấy danh sách đơn đặt chỗ kết hợp với tên địa danh (tiếng Việt)
+        $sql = "SELECT b.*, p.name_vi as place_name 
+                FROM bookings b 
+                JOIN places p ON b.place_id = p.id 
+                ORDER BY b.created_at DESC";
+        
+        $stmt = $this->db->query($sql);
+        $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Đóng gói dữ liệu để truyền sang View
+        $data = [
+            'bookings' => $bookings
+        ];
+
+        // Gọi file giao diện hiển thị danh sách đơn đặt chỗ
+        require_once '../app/views/admin/bookings.php';
+    }
 
 }

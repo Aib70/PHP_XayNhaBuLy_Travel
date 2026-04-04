@@ -60,13 +60,35 @@ class AdminModel {
     }
 
     // 5. Hàm Xóa
-   public function deletePlace($id) {
+  public function deletePlace($id) {
+    try {
+        // เริ่มต้น Transaction เพื่อความปลอดภัย หากลบอย่างหนึ่งไม่ได้ ก็จะไม่ลบทั้งหมด
+        $this->db->beginTransaction();
 
-    $sql = "DELETE FROM places WHERE id = :id";
-    $stmt = $this->db->prepare($sql);
-    $stmt->execute(['id' => $id]);
+        // ขั้นตอนที่ 1: ลบข้อมูลในตารางลูก (bookings) ที่อ้างอิงถึง id นี้ก่อน
+        $sql1 = "DELETE FROM bookings WHERE place_id = ?";
+        $stmt1 = $this->db->prepare($sql1);
+        $stmt1->execute([$id]);
 
-    return true;
+        // ขั้นตอนที่ 2: ลบข้อมูลในตารางที่เกี่ยวข้องอื่นๆ (ถ้ามี เช่น place_translations)
+        $sql2 = "DELETE FROM place_translations WHERE place_id = ?";
+        $stmt2 = $this->db->prepare($sql2);
+        $stmt2->execute([$id]);
+
+        // ขั้นตอนที่ 3: ลบข้อมูลในตารางแม่ (places)
+        $sql3 = "DELETE FROM places WHERE id = ?";
+        $stmt3 = $this->db->prepare($sql3);
+        $result = $stmt3->execute([$id]);
+
+        // ยืนยันการทำงานทั้งหมด
+        $this->db->commit();
+        return $result;
+
+    } catch (PDOException $e) {
+        // หากเกิดข้อผิดพลาด ให้ยกเลิกคำสั่งทั้งหมดที่ทำไปก่อนหน้า (Rollback)
+        $this->db->rollBack();
+        throw $e; // ส่ง Error ต่อไปให้ Controller จัดการ
+    }
 }
 
     // 3. Lấy chi tiết một địa danh theo ID (Dùng để Sửa)

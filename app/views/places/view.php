@@ -1,4 +1,3 @@
-
 <?php require_once '../app/views/inc/header.php'; ?>
 
 <div style="max-width: 1100px; margin: 30px auto; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
@@ -54,9 +53,7 @@
                             <label style="display: block; margin-bottom: 5px; font-size: 0.9rem; color: #666;">
                                 <?= ($data['lang'] == 'lo') ? "ເບີໂທລະສັບ:" : (($data['lang'] == 'en') ? "Phone Number:" : "Số điện thoại:"); ?>
                             </label>
-                            <input type="tel" name="phone" required 
-                                   placeholder="<?= ($data['lang'] == 'lo') ? "ປ້ອນເບີໂທຂອງທ່ານ" : "Nhập số điện thoại của bạn"; ?>"
-                                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <input type="tel" name="phone" required placeholder="Nhập số điện thoại của bạn" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
                         </div>
 
                         <div style="margin-bottom: 15px;">
@@ -72,37 +69,7 @@
                     </div>
                 <?php endif; ?>
             </div>
-
-            <div id="comment-section" style="margin-top: 40px; padding: 30px; background: #fff; border-radius: 15px; border: 1px solid #eee;">
-                <h3 style="color: #333; margin-bottom: 20px;"><?= $data['text']['comment_title']; ?></h3>
-                <?php if(isset($_SESSION['user_id'])): ?>
-                    <form action="<?= URLROOT; ?>/forum/add" method="POST">
-                        <input type="hidden" name="place_id" value="<?= $data['place']['id']; ?>">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                            <input type="text" name="author_name" value="<?= $_SESSION['user_name']; ?>" readonly style="padding: 12px; border: 1px solid #eee; border-radius: 8px; background: #f5f5f5;">
-                            <input type="text" name="title" required placeholder="<?= $data['text']['subject'] ?? 'Subject'; ?>" style="padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
-                        </div>
-                        <textarea name="content" required placeholder="<?= $data['text']['comment_placeholder']; ?>" style="width: 100%; height: 100px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px;"></textarea>
-                        <button type="submit" style="padding: 12px 30px; background: #333; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;"><?= $data['text']['btn_comment']; ?></button>
-                    </form>
-                <?php endif; ?>
-
-                <div class="comment-list" style="margin-top: 20px;">
-                    <?php if(!empty($data['comments'])): foreach($data['comments'] as $cmt): ?>
-                        <div style="padding: 15px; border-bottom: 1px solid #f0f0f0; position: relative;">
-                            <div style="display: flex; justify-content: space-between;">
-                                <strong style="color: #007bff;"><?= htmlspecialchars($cmt['author_name']); ?></strong>
-                                <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                                    <a href="<?= URLROOT; ?>/forum/delete/<?= $cmt['id']; ?>/<?= $data['place']['id']; ?>" style="color: #dc3545; font-size: 0.8rem;" onclick="return confirm('Xác nhận xóa?')">Xóa</a>
-                                <?php endif; ?>
-                            </div>
-                            <h4 style="margin: 5px 0;"><?= htmlspecialchars($cmt['title']); ?></h4>
-                            <p style="color: #555;"><?= nl2br(htmlspecialchars($cmt['content'])); ?></p>
-                        </div>
-                    <?php endforeach; endif; ?>
-                </div>
             </div>
-        </div>
 
         <div style="flex: 1; min-width: 300px;">
             <div style="position: sticky; top: 100px;">
@@ -114,33 +81,31 @@
             </div>
         </div>
     </div>
-    
-    
+
+     <div style="margin-top: 20px;">
+        <?php require_once '../app/views/inc/comment_box.php'; ?>
+    </div>
 
     <hr style="margin: 60px 0; border: 0; border-top: 1px solid #eee;">
+
     <h2 style="text-align: center; margin-bottom: 40px;"><?= $data['text']['related']; ?></h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
-    <?php 
-    // Thêm kiểm tra isset và is_array
-    if(isset($data['related']) && is_array($data['related'])): 
-        foreach($data['related'] as $rel): 
-    ?>
-        <a href="<?= URLROOT; ?>/place/view/<?= $rel['id']; ?>" style="text-decoration: none; color: inherit;">
-            <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                <img src="<?= URLROOT; ?>/public/img/places/<?= $rel['image_main']; ?>" style="width: 100%; height: 180px; object-fit: cover;">
-                <div style="padding: 20px; text-align: center; font-weight: bold;">
-                    <?= htmlspecialchars($rel['name_' . $data['lang']] ?? ($rel['name'] ?? 'Unnamed Place')); ?>
-                </div>
-            </div>
-        </a>
-    <?php 
-        endforeach; 
-    else: 
-        // Hiển thị thông báo nếu không có dữ liệu (tùy chọn)
-        echo "<p style='text-align:center; grid-column: 1/-1; color:#999;'>Không có địa danh liên quan.</p>";
-    endif; 
-    ?>
-</div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px;">
+        <?php if(isset($data['related']) && is_array($data['related'])): 
+            foreach($data['related'] as $rel): ?>
+                <a href="<?= URLROOT; ?>/place/view/<?= $rel['id']; ?>" style="text-decoration: none; color: inherit;">
+                    <div style="background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); transition: 0.3s;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <img src="<?= URLROOT; ?>/public/img/places/<?= $rel['image_main']; ?>" style="width: 100%; height: 180px; object-fit: cover;">
+                        <div style="padding: 20px; text-align: center; font-weight: bold;">
+                            <?= htmlspecialchars($rel['name_' . $data['lang']] ?? ($rel['name'] ?? 'Unnamed Place')); ?>
+                        </div>
+                    </div>
+                </a>
+        <?php endforeach; else: ?>
+            <p style='text-align:center; grid-column: 1/-1; color:#999;'>Không có địa danh liên quan.</p>
+        <?php endif; ?>
+    </div>
+
+   
     
 </div>
 

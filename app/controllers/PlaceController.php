@@ -173,4 +173,31 @@ class PlaceController {
     require_once '../app/views/places/category.php';
     require_once '../app/views/inc/footer.php';
   }
+// 4. Xử lý gửi bình luận & đánh giá
+   public function add_review($place_id) {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
+        // 1. Lấy dữ liệu từ Form
+        $author_name = $_SESSION['user_name']; // Lấy tên từ Session
+        $title = $_POST['title'] ?? 'Bình luận mới';
+        $content = $_POST['content'] ?? '';
+        $rating = $_POST['rating'] ?? 5; // Đây là số sao khách chọn
+
+        // 2. Câu lệnh SQL khớp chính xác với bảng forum_posts của bạn
+        $sql = "INSERT INTO forum_posts (author_name, title, content, status, created_at, place_id, rating) 
+                VALUES (?, ?, ?, 1, NOW(), ?, ?)";
+        
+        $stmt = $this->db->prepare($sql);
+        
+        // 3. Thực thi và truyền tham số
+        if ($stmt->execute([$author_name, $title, $content, $place_id, $rating])) {
+            header("Location: " . URLROOT . "/place/view/" . $place_id . "?msg=success");
+            exit();
+        } else {
+            die("Lỗi: Không thể lưu bình luận.");
+        }
+    } else {
+        header('Location: ' . URLROOT . '/user/login');
+        exit();
+    }
+  }
 }
