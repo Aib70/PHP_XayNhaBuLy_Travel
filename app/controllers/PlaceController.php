@@ -139,23 +139,34 @@ class PlaceController {
 
     // 3. Xử lý đặt chỗ
     public function book() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $bookingData = [
-                'place_id' => $_POST['place_id'],
-                'name'     => $_POST['name'],
-                'email'    => $_POST['email'],
-                'phone'    => $_POST['phone'] ?? '', 
-                'date'     => $_POST['date']
-            ];
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ' . URLROOT . '/user/login');
+            exit();
+        }
 
-            if ($this->placeModel->createBooking($bookingData)) {
-                header('Location: ' . URLROOT . '/place/view/' . $_POST['place_id'] . '?msg=booked');
-                exit();
-            } else {
-                die("Lỗi: Không thể lưu dữ liệu.");
-            }
+        // Chuẩn bị dữ liệu để truyền vào Model
+        $data = [
+            'place_id'     => $_POST['place_id'],
+            'user_id'      => $_SESSION['user_id'],
+            'user_name'    => $_POST['name'],
+            'user_email'   => $_SESSION['user_email'] ?? null,
+            'phone'        => $_POST['phone'],
+            // Nếu là địa danh dùng date, nếu là khách sạn dùng checkin
+            'booking_date' => (!empty($_POST['date'])) ? $_POST['date'] : ($_POST['checkin'] ?? date('Y-m-d')),
+            'checkin'      => !empty($_POST['checkin']) ? $_POST['checkin'] : null,
+            'checkout'     => !empty($_POST['checkout']) ? $_POST['checkout'] : null,
+            'guests'       => !empty($_POST['guests']) ? $_POST['guests'] : 1
+        ];
+
+        if ($this->placeModel->createBooking($data)) {
+            header('Location: ' . URLROOT . '/place/view/' . $data['place_id'] . '?msg=booked');
+            exit();
+        } else {
+            die('Lỗi thực thi câu lệnh SQL.');
         }
     }
+}
 
     public function all() {
     $lang = $_SESSION['lang'] ?? 'vi';
@@ -174,21 +185,24 @@ class PlaceController {
     require_once '../app/views/inc/footer.php';
   }
 // 4. Xử lý gửi bình luận & đánh giá
-   public function add_review($place_id) {
+  public function add_review($place_id) {
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['user_id'])) {
         // 1. Lấy dữ liệu từ Form
-        $author_name = $_SESSION['user_name']; // Lấy tên từ Session
+        $author_name = $_SESSION['user_name']; 
         $title = $_POST['title'] ?? 'Bình luận mới';
-        $content = $_POST['content'] ?? '';
-        $rating = $_POST['rating'] ?? 5; // Đây là số sao khách chọn
-
-        // 2. Câu lệnh SQL khớp chính xác với bảng forum_posts của bạn
+        
+        // SỬA DÒNG NÀY: Đổi từ 'content' thành 'comment' cho khớp với Form
+        $content = $_POST['comment'] ?? ''; 
+        
+        $rating = $_POST['rating'] ?? 5; 
+        
+        // 2. Câu lệnh SQL (Giữ nguyên vì bảng của bạn dùng cột content là đúng rồi)
         $sql = "INSERT INTO forum_posts (author_name, title, content, status, created_at, place_id, rating) 
                 VALUES (?, ?, ?, 1, NOW(), ?, ?)";
         
         $stmt = $this->db->prepare($sql);
         
-        // 3. Thực thi và truyền tham số
+        // 3. Thực thi
         if ($stmt->execute([$author_name, $title, $content, $place_id, $rating])) {
             header("Location: " . URLROOT . "/place/view/" . $place_id . "?msg=success");
             exit();
@@ -199,5 +213,5 @@ class PlaceController {
         header('Location: ' . URLROOT . '/user/login');
         exit();
     }
-  }
+}
 }

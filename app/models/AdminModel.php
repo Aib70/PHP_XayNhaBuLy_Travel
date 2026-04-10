@@ -260,9 +260,10 @@ public function getRelatedHotels($current_id, $lang) {
 
 public function getAllBookings() {
     try {
-        // Lấy thông tin đặt chỗ kèm tên địa danh/khách sạn
-        $sql = "SELECT b.*, pt.name as place_name 
+        // Thêm p.category_id vào đây
+        $sql = "SELECT b.*, pt.name as place_name, p.category_id 
                 FROM bookings b
+                JOIN places p ON b.place_id = p.id
                 LEFT JOIN place_translations pt ON b.place_id = pt.place_id 
                 WHERE pt.lang_code = 'vi'
                 ORDER BY b.created_at DESC";

@@ -1,0 +1,211 @@
+/* =========================================
+   1. HERO SECTION (Banner đầu trang)
+   ========================================= */
+.special-hero {
+    position: relative;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    /* Lưu ý: background-image sẽ được set trực tiếp trong PHP vì có biến URL */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.hero-content { 
+    position: relative; 
+    z-index: 2; 
+    max-width: 800px; 
+    padding: 20px; 
+}
+
+.hero-content h1 { 
+    font-size: 3rem; 
+    text-transform: uppercase; 
+    margin-bottom: 10px; 
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+}
+
+/* =========================================
+   2. TIÊU ĐỀ & BỐ CỤC CHUNG
+   ========================================= */
+.detail-main-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+.main-title-wrapper {
+    margin: 30px auto 0;
+}
+
+.main-title-wrapper h1 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.section-title { 
+    text-align: left; 
+    margin: 40px 0 20px; 
+    position: relative; 
+}
+
+.section-title h2 {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title::after {
+    content: ''; 
+    width: 50px; 
+    height: 3px; 
+    background: #f39c12;
+    display: block; 
+    margin-top: 10px;
+}
+
+/* =========================================
+   3. NỘI DUNG VĂN BẢN & VIDEO
+   ========================================= */
+.content-box {
+    line-height: 1.8; 
+    font-size: 1.1rem; 
+    color: #444;
+    text-align: justify; 
+    margin-bottom: 40px;
+}
+
+.video-container {
+    max-width: 100%; 
+    margin: 0 auto 50px;
+    border-radius: 20px; 
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* =========================================
+   4. BOOKING & MAP (Hai cột)
+   ========================================= */
+.info-flex-container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    align-items: flex-start;
+}
+
+/* Cột Booking */
+.booking-section {
+    flex: 1.5;
+    min-width: 350px;
+    background: #fdfdfd;
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+.booking-section h3 {
+    color: #d35400;
+    margin-top: 0;
+    font-size: 1.6rem;
+    margin-bottom: 25px;
+}
+
+.login-box-req {
+    text-align: center;
+    padding: 40px;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    background: white;
+}
+
+/* Cột Bản đồ */
+.map-section {
+    flex: 1;
+    min-width: 300px;
+}
+
+.map-wrapper {
+    background: white;
+    padding: 12px;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border: 1px solid #eee;
+}
+
+.map-iframe-container {
+    height: 380px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.btn-direction {
+    display: block;
+    background: #4285F4;
+    color: white;
+    padding: 16px;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* =========================================
+   5. ĐỊA DANH LIÊN QUAN (Related)
+   ========================================= */
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.related-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    text-decoration: none;
+    color: inherit;
+    transition: 0.3s;
+}
+
+.related-card:hover {
+    transform: translateY(-5px);
+}
+
+.related-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.related-card .name {
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* =========================================
+   6. RESPONSIVE (Cho Mobile)
+   ========================================= */
+@media (max-width: 768px) {
+    .hero-content h1 { font-size: 1.8rem; }
+    .special-hero { height: 50vh; }
+    .info-flex-container { gap: 20px; }
+}

@@ -54,6 +54,12 @@ class HomeController {
         echo "Chào bạn " . htmlspecialchars($name) . "!";
     }
 
+    // --- TRANG VỀ CHÚNG TÔI ---
+    public function about() {
+        // Đã sửa lại để gọi đúng file view
+        require_once '../app/views/home/about.php';
+    }
+
    public function ai_chat_api() {
     header('Content-Type: application/json');
     try {
@@ -121,4 +127,15 @@ class HomeController {
     }
     exit();
 }
+
+public function translate_text($text, $target_lang) {
+    // Đây là URL API miễn phí (không chính thức nhưng vẫn hoạt động tốt cho việc học tập)
+    $url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" . $target_lang . "&dt=t&q=" . urlencode($text);
+    
+    $res = file_get_contents($url);
+    $res = json_decode($res);
+    
+    return $res[0][0][0] ?? $text;
+}
+
 }

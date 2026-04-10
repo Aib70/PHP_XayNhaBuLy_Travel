@@ -1,7 +1,13 @@
 <?php
 class UserController {
     private $db;
-    public function __construct($pdo) { $this->db = $pdo; }
+    private $userModel; // Thêm dòng này
+    public function __construct($pdo) { 
+        $this->db = $pdo; 
+        // Phải khởi tạo Model ở đây thì các hàm bên dưới mới dùng được $this->userModel
+        require_once '../app/models/UserModel.php';
+        $this->userModel = new UserModel($this->db);
+    }
 
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -145,5 +151,91 @@ private function getLoginLabels($lang) {
     header('Location: ' . URLROOT . '/home');
     exit();
  }
+
+public function my_reviews() {
+    // 1. Kiểm tra đăng nhập
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . URLROOT . '/user/login');
+        exit();
+    }
+
+    $userId = $_SESSION['user_id'];
+    
+    // 2. Gọi Model để lấy danh sách bình luận (Sẽ tạo ở bước 2)
+    require_once '../app/models/UserModel.php';
+    $userModel = new UserModel($this->db);
+    $myReviews = $userModel->getReviewsByUserId($userId);
+
+    // 3. Truyền dữ liệu sang View
+    $data = [
+        'reviews' => $myReviews,
+        'title' => 'Bình luận của tôi'
+    ];
+
+    require_once '../app/views/inc/header.php';
+    require_once '../app/views/user/my_reviews.php'; // Sẽ tạo ở bước 3
+    require_once '../app/views/inc/footer.php';
+} 
+// Hàm xem lịch sử đặt khách sạn
+public function history_hotels() {
+        if (!isset($_SESSION['user_id'])) { 
+            header('Location: ' . URLROOT . '/user/login'); 
+            exit(); 
+        }
+
+        // Gọi hàm lấy dữ liệu (2 = Khách sạn)
+        $bookings = $this->userModel->getBookingsByType($_SESSION['user_id'], 2);
+
+        $data = [
+            'bookings' => $bookings,
+            'lang' => $_SESSION['lang'] ?? 'vi'
+        ];
+        
+        require_once '../app/views/inc/header.php';
+        require_once '../app/views/user/history_hotels.php';
+        require_once '../app/views/inc/footer.php';
+    }
+// Hàm xem lịch sử đặt địa danh
+public function history_places() {
+        if (!isset($_SESSION['user_id'])) { 
+            header('Location: ' . URLROOT . '/user/login'); 
+            exit(); 
+        }
+
+        // Gọi hàm lấy dữ liệu (NOT 2 = Địa danh)
+        $bookings = $this->userModel->getBookingsByType($_SESSION['user_id'], 'NOT 2');
+
+        $data = [
+            'bookings' => $bookings,
+            'lang' => $_SESSION['lang'] ?? 'vi'
+        ];
+        
+        require_once '../app/views/inc/header.php';
+        require_once '../app/views/user/history_places.php';
+        require_once '../app/views/inc/footer.php';
+    }
+
+    public function cancel_booking($id) {
+    // 1. Kiểm tra đăng nhập
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . URLROOT . '/user/login');
+        exit();
+    }
+
+    // 2. Gọi Model để kiểm tra trạng thái đơn hàng trước khi xóa
+    // Đảm bảo đơn này thuộc về người đang đăng nhập và chưa được duyệt
+    $booking = $this->userModel->getBookingById($id);
+
+    if ($booking && $booking['user_id'] == $_SESSION['user_id'] && $booking['status'] == 'pending') {
+        if ($this->userModel->deleteBooking($id)) {
+            // Hủy thành công quay lại trang lịch sử kèm thông báo
+            header('Location: ' . $_SERVER['HTTP_REFERER'] . '?msg=cancelled');
+            exit();
+        }
+    } else {
+        // Nếu đơn đã xác nhận hoặc không phải của khách này thì báo lỗi
+        die("Hành động không hợp lệ hoặc đơn hàng đã được Admin xác nhận!");
+    }
+}
 
 }

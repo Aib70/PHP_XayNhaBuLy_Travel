@@ -1,0 +1,152 @@
+/* =========================================
+   1. BIẾN HỆ THỐNG (ROOT VARIABLES)
+   ========================================= */
+:root {
+    --primary-color: #f39c12;
+    --secondary-color: #2c3e50;
+    --bg-color: #f4f7f6;
+    --white: #ffffff;
+    --success-color: #2ecc71;
+    --danger-color: #e74c3c;
+    --info-color: #17a2b8;
+    --warning-color: #ffcc00;
+    --dark-grey: #343a40;
+    --text-muted: #7f8c8d;
+}
+
+/* =========================================
+   2. THIẾT LẬP CHUNG (GLOBAL & RESET)
+   ========================================= */
+body { 
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
+    background-color: var(--bg-color); 
+    color: #333;
+    line-height: 1.6;
+}
+
+.container { 
+    max-width: 1200px; 
+    margin: auto; 
+    background: var(--white); 
+    padding: 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+}
+
+h1, h2, h3 { color: var(--secondary-color); }
+a { text-decoration: none; transition: 0.3s; }
+
+/* =========================================
+   3. HEADER & NAVIGATION (header.php)
+   ========================================= */
+.navbar { background: #333; color: white; display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+.logo { font-size: 24px; font-weight: bold; color: #ffcc00; }
+.nav-links { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
+.nav-links li { margin-left: 20px; }
+.nav-links a { color: white; font-size: 15px; }
+.nav-links a:hover, .nav-links a.active-link { color: #ffcc00; }
+.nav-links a.active-link { font-weight: bold; border-bottom: 2px solid #ffcc00; padding-bottom: 5px; }
+
+/* User Dropdown */
+.dropdown { position: relative; }
+.user-info-btn { color: #ffcc00; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.dropdown-content { display: none; position: absolute; right: 0; background-color: #004a7c; min-width: 220px; border-radius: 4px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); z-index: 1100; }
+.dropdown-content a { color: white !important; padding: 12px 16px; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.dropdown-content a:hover { background-color: #003559; }
+.dropdown:hover .dropdown-content { display: block; }
+
+/* =========================================
+   4. FORM & UPLOAD (add.php, edit.php, register.php)
+   ========================================= */
+.form-group { margin-bottom: 20px; }
+label { font-weight: bold; display: block; margin-bottom: 8px; color: #333; }
+input, textarea, select { 
+    width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: 0.3s;
+}
+input:focus, textarea:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 5px rgba(243,156,18,0.2); }
+
+.lang-block { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+.vi { border-left: 5px solid #e74c3c; }
+.lo { border-left: 5px solid #3498db; }
+.en { border-left: 5px solid #2ecc71; }
+
+.upload-section, .upload-box { background: #fffcf5; border: 2px dashed var(--primary-color); padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
+
+/* =========================================
+   5. ADMIN UI (index.php, hotels.php, bookings.php)
+   ========================================= */
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.btn-main { padding: 10px 20px; border-radius: 8px; font-weight: bold; color: white; border: none; cursor: pointer; }
+.btn-add { background: #28a745; }
+.btn-bookings { background: #17a2b8; }
+.btn-users { background: #6f42c1; }
+
+.admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+.admin-table th { background: var(--dark-grey); color: white; padding: 15px; text-align: left; text-transform: uppercase; font-size: 13px; }
+.admin-table td { padding: 15px; background: white; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+.admin-table tr:hover td { background: #fcfcfc; }
+.admin-table td:first-child { border-left: 1px solid #eee; border-radius: 10px 0 0 10px; }
+.admin-table td:last-child { border-right: 1px solid #eee; border-radius: 0 10px 10px 0; }
+
+.status-badge { padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
+.pending { background: #ffeeba; color: #856404; }
+.confirmed { background: #d4edda; color: #155724; }
+.cancelled { background: #f8d7da; color: #721c24; }
+
+/* =========================================
+   6. AUTH PAGES (login.php, register.php)
+   ========================================= */
+.login-wrapper, .register-wrapper { 
+    display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 20px; 
+}
+.login-card, .register-card, .login-box { 
+    background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; 
+}
+.error-box, .error-msg { background: #fff5f5; color: #d9534f; padding: 12px; border-radius: 8px; border: 1px solid #fbd5d5; margin-bottom: 20px; text-align: center; }
+
+/* =========================================
+   7. TRANG CHỦ & ĐỊA DANH (index.php, view_special.php)
+   ========================================= */
+.video-banner { position: relative; width: 100%; height: 500px; overflow: hidden; border-radius: 15px; margin-bottom: 30px; }
+.video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; }
+
+.place-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding-bottom: 50px; }
+.place-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; height: 100%; display: flex; flex-direction: column; }
+.place-card:hover { transform: translateY(-10px); }
+.place-img { width: 100%; height: 200px; object-fit: cover; }
+.place-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+
+.special-hero { position: relative; height: 60vh; display: flex; align-items: center; justify-content: center; color: white; background-size: cover !important; background-attachment: fixed !important; }
+
+/* =========================================
+   8. TRANG ABOUT (about.php)
+   ========================================= */
+.about-hero { height: 400px; display: flex; align-items: center; justify-content: center; color: white; background-size: cover !important; }
+.intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: center; }
+.value-card { background: white; padding: 40px; border-radius: 15px; cursor: pointer; transition: 0.3s; }
+.value-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+.value-card i { font-size: 3rem; color: var(--primary-color); margin-bottom: 20px; }
+
+/* Map Section */
+.map-container { width: 100%; height: 450px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 5px solid white; }
+
+/* =========================================
+   9. AI CHAT & TOAST ALERTS
+   ========================================= */
+#ai-chat-wrapper { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+#chat-window { width: 350px; height: 450px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; position: absolute; bottom: 80px; right: 0; }
+
+.alert-toast { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.5s ease forwards; display: flex; align-items: center; gap: 10px; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* =========================================
+   10. RESPONSIVE (MOBILE)
+   ========================================= */
+@media (max-width: 768px) {
+    .navbar { padding: 15px 20px; }
+    .nav-links { display: none; } /* Có thể làm menu hamburger sau */
+    .intro-grid, .values-grid { grid-template-columns: 1fr; }
+    .place-grid { grid-template-columns: 1fr; }
+}

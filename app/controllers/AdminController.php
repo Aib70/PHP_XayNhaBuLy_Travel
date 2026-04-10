@@ -201,11 +201,35 @@ class AdminController {
     }
 
     // --- QUẢN LÝ DIỄN ĐÀN ---
-    public function forum() {
-        $stmt = $this->db->query("SELECT * FROM forum_posts ORDER BY status ASC, created_at DESC");
-        $data['posts'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        require_once '../app/views/admin/forum.php';
+    // Thêm tham số $id vào hàm
+// Trong file app/controllers/AdminController.php
+// --- QUẢN LÝ DIỄN ĐÀN (Đã sửa để lọc theo từng địa danh) ---
+public function forum($place_id = null) {
+    if (!empty($place_id)) {
+        // 1. Lấy tên địa danh/khách sạn (tiếng Việt)
+        $sqlPlace = "SELECT name FROM place_translations WHERE place_id = ? AND lang_code = 'vi' LIMIT 1";
+        $stmtPlace = $this->db->prepare($sqlPlace);
+        $stmtPlace->execute([$place_id]);
+        $place = $stmtPlace->fetch(PDO::FETCH_ASSOC);
+        $placeName = $place ? $place['name'] : "Không xác định";
+
+        // 2. Lấy danh sách bài viết của địa danh đó
+        $sqlPosts = "SELECT * FROM forum_posts WHERE place_id = ? ORDER BY created_at DESC";
+        $stmtPosts = $this->db->prepare($sqlPosts);
+        $stmtPosts->execute([$place_id]);
+        $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $posts = [];
+        $placeName = "Tất cả địa danh";
     }
+
+    $data = [
+        'posts' => $posts,
+        'place_name' => $placeName // Truyền tên sang View
+    ];
+
+    require_once '../app/views/admin/forum.php';
+}
 
     public function approve_post($id) {
         $stmt = $this->db->prepare("UPDATE forum_posts SET status = 1 WHERE id = ?");
@@ -308,23 +332,40 @@ public function store_user() {
  }
 
  // 1. Hiển thị danh sách tất cả đơn đặt chỗ (Đây là hàm bạn đang thiếu)
-    public function bookings() {
-        // Truy vấn lấy danh sách đơn đặt chỗ kết hợp với tên địa danh (tiếng Việt)
-        $sql = "SELECT b.*, p.name_vi as place_name 
-                FROM bookings b 
-                JOIN places p ON b.place_id = p.id 
-                ORDER BY b.created_at DESC";
-        
-        $stmt = $this->db->query($sql);
-        $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+   public function bookings() {
+    require_once '../app/models/AdminModel.php';
+    $adminModel = new AdminModel($this->db);
+    
+    $allBookings = $adminModel->getAllBookings();
 
-        // Đóng gói dữ liệu để truyền sang View
-        $data = [
-            'bookings' => $bookings
-        ];
+    // Phân loại dữ liệu thành 2 mảng riêng biệt
+    $hotelBookings = [];
+    $placeBookings = [];
 
-        // Gọi file giao diện hiển thị danh sách đơn đặt chỗ
-        require_once '../app/views/admin/bookings.php';
+    foreach ($allBookings as $booking) {
+    // Kiểm tra xem key có tồn tại không trước khi dùng để an toàn tuyệt đối
+    if (isset($booking['category_id']) && $booking['category_id'] == 2) {
+        $hotelBookings[] = $booking;
+    } else {
+        $placeBookings[] = $booking;
     }
+}
+
+    $data = [
+        'hotelBookings' => $hotelBookings,
+        'placeBookings' => $placeBookings
+    ];
+
+    require_once '../app/views/admin/bookings.php';
+}
+
+public function approve_booking($id) {
+    $stmt = $this->db->prepare("UPDATE bookings SET status = 'confirmed' WHERE id = ?");
+    if ($stmt->execute([$id])) {
+        header('Location: ' . URLROOT . '/admin/bookings?msg=confirmed');
+    } else {
+        die("Lỗi: Không thể xác nhận đơn hàng.");
+    }
+}
 
 }

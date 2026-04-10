@@ -16,3 +16,6 @@
 
     <button type="submit">Lưu địa danh</button>
 </form>
+<a href="<?= URLROOT ?>/forum/forum/<?= $place['id'] ?>">
+    📢 Quản lý Diễn đàn
+</a>

@@ -62,21 +62,35 @@ class PlaceModel {
     }
   }
 
-  public function createBooking($data) {
-    // Sửa fullname -> user_name | email -> user_email để khớp với ảnh Workbench
-    $sql = "INSERT INTO bookings (place_id, user_name, user_email, phone, booking_date, created_at) 
-            VALUES (?, ?, ?, ?, ?, NOW())";
+ public function createBooking($data) {
+    // Liệt kê chính xác 11 cột
+    $sql = "INSERT INTO bookings (
+                place_id, user_id, user_name, user_email, 
+                phone, booking_date, checkin, checkout, 
+                guests, status, created_at
+            ) 
+            VALUES (
+                :place_id, :user_id, :user_name, :user_email, 
+                :phone, :booking_date, :checkin, :checkout, 
+                :guests, :status, NOW()
+            )";
     
     $stmt = $this->db->prepare($sql);
     
+    // Bind đúng 10 tham số (tham số thứ 11 là NOW() đã nằm trong SQL)
     return $stmt->execute([
-        $data['place_id'],
-        $data['name'],     // Dữ liệu từ Controller
-        $data['email'],    // Dữ liệu từ Controller
-        $data['phone'],    // Dữ liệu từ Controller
-        $data['date']      // Dữ liệu từ Controller
+        ':place_id'     => $data['place_id'],
+        ':user_id'      => $data['user_id'],
+        ':user_name'    => $data['user_name'],
+        ':user_email'   => $data['user_email'],
+        ':phone'        => $data['phone'],
+        ':booking_date' => $data['booking_date'],
+        ':checkin'      => $data['checkin'],
+        ':checkout'     => $data['checkout'],
+        ':guests'       => $data['guests'],
+        ':status'       => 'pending' // Gán cứng trạng thái là chờ duyệt
     ]);
-  }
+}
 
   public function getPlacesByCategory($cat_id, $lang) {
     try {
@@ -150,6 +164,37 @@ public function getAllDestinationsOnly($lang) {
     } catch (PDOException $e) {
         return [];
     }
+}
+
+public function getBookingsByType($userId, $type) {
+    $lang = $_SESSION['lang'] ?? 'vi';
+
+    $condition = ($type === 'NOT 2') ? "p.category_id != 2" : "p.category_id = 2";
+
+    $sql = "SELECT b.*, 
+            COALESCE(pt.name, pt_vi.name, '[Không có tên]') as place_name
+            FROM bookings b 
+            JOIN places p ON b.place_id = p.id 
+
+            -- Ngôn ngữ hiện tại
+            LEFT JOIN place_translations pt 
+                ON p.id = pt.place_id AND LOWER(pt.lang_code) = LOWER(:lang)
+
+            -- Fallback tiếng Việt
+            LEFT JOIN place_translations pt_vi 
+                ON p.id = pt_vi.place_id AND pt_vi.lang_code = 'vi'
+
+            WHERE b.user_id = :user_id 
+            AND $condition 
+            ORDER BY b.created_at DESC";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute([
+    'user_id' => $userId,
+    'lang'    => trim(strtolower($lang)) // Thêm trim và strtolower ở đây
+]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 }
