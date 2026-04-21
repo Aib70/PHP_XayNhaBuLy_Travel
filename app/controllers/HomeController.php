@@ -73,7 +73,7 @@ class HomeController {
         }
 
         // 1. ใส่ API Key ของคุณที่นี่
-        $apiKey = "AIzaSyCyfq6df6oFwkLtnbes3q8xa-M1Iq6R-nM"; 
+        $apiKey = "AIzaSyDBUT3RzhDiVYwEmf2_oskpFd--uOCbFaM"; 
         
         // 2. ปรับ URL เป็น v1beta และใช้ชื่อโมเดลแบบเต็ม
         // โครงสร้างที่ถูกต้อง: .../v1beta/models/gemini-1.5-flash:generateContent?key=...
@@ -136,6 +136,11 @@ public function translate_text($text, $target_lang) {
     $res = json_decode($res);
     
     return $res[0][0][0] ?? $text;
+}
+
+public function contact() {
+   
+     require_once '../app/views/home/contact.php';
 }
 
 }

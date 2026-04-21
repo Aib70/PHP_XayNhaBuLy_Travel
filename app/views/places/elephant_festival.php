@@ -3,11 +3,8 @@
     <div style="text-align: center; max-width: 800px; padding: 20px;">
         <h1 style="font-size: 4rem; text-transform: uppercase; margin-bottom: 10px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
             <?= $data['text']['festival_title']; ?>
-        </div>
-    </div>
+        </h1> </div>
 </section>
-
-
 
 <div class="container" style="max-width: 1200px; margin: -50px auto 50px; position: relative; z-index: 10; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
     
@@ -21,8 +18,13 @@
             </p>
         </div>
         
-        <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
-            <iframe width="100%" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+        <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); height: 350px;">
+            <iframe width="100%" height="100%" 
+                    src="https://www.youtube.com/embed/B1jf5ZoGkME?autoplay=1&mute=1&controls=0&rel=0&playlist=B1jf5ZoGkME&loop=1" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
         </div>
     </div>
 
