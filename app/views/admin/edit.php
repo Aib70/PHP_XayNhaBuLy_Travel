@@ -54,6 +54,15 @@
                 </div>
             </div>
 
+            <div style="margin-bottom: 20px; padding: 15px; background: #fff3cd; border-radius: 8px; border: 1px solid #ffeeba;">
+    <label style="font-weight: bold; color: #856404;">💰 Giá phòng (VNĐ/đêm):</label>
+    <input type="number" name="price_range" 
+           value="<?php echo $data['place']['price_range']; ?>" 
+           placeholder="Ví dụ: 500000" 
+           style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #ddd; border-radius: 6px;">
+    <small style="color: #666;">* Nhập số nguyên, không cần nhập dấu chấm.</small>
+</div>
+
             <div class="img-preview">
                 <h3>🖼 Hình ảnh địa danh</h3>
                 <div style="margin-bottom: 10px;">

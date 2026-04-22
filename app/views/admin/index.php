@@ -171,11 +171,13 @@
         <h1>Quản lý địa danh Xayabury</h1>
         
         <div class="header-actions">
-            <a href="<?php echo URLROOT; ?>/admin/add" class="btn-main btn-add">+ Thêm địa danh mới</a>
-            <a href="<?php echo URLROOT; ?>/admin/bookings" class="btn-main btn-bookings">📋 Danh sách đặt chỗ</a>
-            <a href="<?php echo URLROOT; ?>/admin/users" class="btn-main btn-users">👥 Quản lý người dùng</a>
-            <a href="<?php echo URLROOT; ?>/admin/hotels" class="btn-main" style="background-color: #f39c12;">🏨 Quản lý khách sạn</a>
-        </div>
+    <a href="<?php echo URLROOT; ?>/admin/add" class="btn-main btn-add">+ Thêm địa danh mới</a>
+    <a href="<?php echo URLROOT; ?>/admin/bookings" class="btn-main btn-bookings">📋 Danh sách đặt chỗ</a>
+    <a href="<?php echo URLROOT; ?>/admin/users" class="btn-main btn-users">👥 Quản lý người dùng</a>
+    <a href="<?php echo URLROOT; ?>/admin/hotels" class="btn-main" style="background-color: #f39c12;">🏨 Quản lý khách sạn</a>
+    
+    <a href="<?php echo URLROOT; ?>/admin/help_requests" class="btn-main" style="background-color: #e84393;">📩 Quản lý trợ giúp</a>
+</div>
 
         <table class="admin-table">
             <thead>

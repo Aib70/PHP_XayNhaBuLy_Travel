@@ -138,6 +138,35 @@ public function translate_text($text, $target_lang) {
     return $res[0][0][0] ?? $text;
 }
 
+// --- HÀM XỬ LÝ GỬI LIÊN HỆ ---
+public function send_contact() {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // 1. Lấy dữ liệu từ Form
+        $name = htmlspecialchars($_POST['name'] ?? '');
+        $contact = htmlspecialchars($_POST['contact'] ?? '');
+        $message = htmlspecialchars($_POST['message'] ?? '');
+
+        try {
+            // 2. Lưu vào bảng contacts (Đảm bảo bạn đã chạy lệnh SQL tạo bảng này rồi)
+            $sql = "INSERT INTO contacts (name, contact_info, message) VALUES (?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            
+            if ($stmt->execute([$name, $contact, $message])) {
+                // 3. Gửi xong quay lại trang liên hệ với thông báo thành công
+                header('Location: ' . URLROOT . '/home/contact?msg=sent');
+                exit();
+            } else {
+                die("Lỗi: Không thể lưu tin nhắn.");
+            }
+        } catch (Exception $e) {
+            die("Lỗi Database: " . $e->getMessage());
+        }
+    } else {
+        // Nếu truy cập trực tiếp link này mà không qua Form thì quay về trang chủ
+        header('Location: ' . URLROOT . '/home/index');
+    }
+}
+
 public function contact() {
    
      require_once '../app/views/home/contact.php';

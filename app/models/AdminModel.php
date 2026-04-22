@@ -35,29 +35,36 @@ class AdminModel {
     }
 
     // 4. Hàm Thêm mới
-    public function addPlace($data) {
-        try {
-            $this->db->beginTransaction();
-            $sql1 = "INSERT INTO places (category_id, latitude, longitude, image_main, is_special) VALUES (?, ?, ?, ?, ?)";
-            $stmt1 = $this->db->prepare($sql1);
-            $stmt1->execute([
-                $data['category_id'], $data['lat'], $data['lng'], $data['image'], $data['is_special']
-            ]);
+   public function addPlace($data) {
+    try {
+        $this->db->beginTransaction();
+        
+        // BỔ SUNG: price_range vào danh sách cột và thêm một dấu ?
+        $sql1 = "INSERT INTO places (category_id, latitude, longitude, price_range, image_main, is_special) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt1 = $this->db->prepare($sql1);
+        $stmt1->execute([
+            $data['category_id'], 
+            $data['lat'], 
+            $data['lng'], 
+            $data['price_range'], // Thêm biến này
+            $data['image'], 
+            $data['is_special']
+        ]);
 
-            $place_id = $this->db->lastInsertId();
-            $sql2 = "INSERT INTO place_translations (place_id, lang_code, name, description, address) VALUES (?, ?, ?, ?, ?)";
-            $stmt2 = $this->db->prepare($sql2);
-            $langs = ['vi','lo','en'];
-            foreach ($langs as $lang) {
-                $stmt2->execute([$place_id, $lang, $data['name_'.$lang], $data['desc_'.$lang], $data['addr_'.$lang]]);
-            }
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return false;
+        $place_id = $this->db->lastInsertId();
+        $sql2 = "INSERT INTO place_translations (place_id, lang_code, name, description, address) VALUES (?, ?, ?, ?, ?)";
+        $stmt2 = $this->db->prepare($sql2);
+        $langs = ['vi','lo','en'];
+        foreach ($langs as $lang) {
+            $stmt2->execute([$place_id, $lang, $data['name_'.$lang], $data['desc_'.$lang], $data['addr_'.$lang]]);
         }
+        $this->db->commit();
+        return true;
+    } catch (Exception $e) {
+        $this->db->rollBack();
+        return false;
     }
+}
 
     // 5. Hàm Xóa
   public function deletePlace($id) {
@@ -108,24 +115,38 @@ class AdminModel {
     }
 
     // 6. Cập nhật bài viết
-    public function updatePlace($id, $data) {
-        try {
-            $this->db->beginTransaction();
-            $sql = "UPDATE places SET category_id=?, latitude=?, longitude=?, image_main=?, is_special=? WHERE id=?";
-            $this->db->prepare($sql)->execute([$data['category_id'], $data['lat'], $data['lng'], $data['image'], $data['is_special'], $id]);
-            
-            $this->db->prepare("DELETE FROM place_translations WHERE place_id=?")->execute([$id]);
-            $stmt2 = $this->db->prepare("INSERT INTO place_translations (place_id, lang_code, name, description, address) VALUES (?, ?, ?, ?, ?)");
-            foreach (['vi','lo','en'] as $lang) {
-                $stmt2->execute([$id, $lang, $data['name_'.$lang], $data['desc_'.$lang], $data['addr_'.$lang]]);
-            }
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return false;
+   public function updatePlace($id, $data) {
+    try {
+        $this->db->beginTransaction();
+        
+        // BỔ SUNG: price_range=? vào câu lệnh SQL bên dưới
+        $sql = "UPDATE places SET category_id=?, latitude=?, longitude=?, price_range=?, image_main=?, is_special=? WHERE id=?";
+        
+        $this->db->prepare($sql)->execute([
+            $data['category_id'], 
+            $data['lat'], 
+            $data['lng'], 
+            $data['price_range'], // Lưu giá trị từ Controller vào đây
+            $data['image'], 
+            $data['is_special'], 
+            $id
+        ]);
+        
+        // Cập nhật bản dịch (Giữ nguyên logic cũ của bạn)
+        $this->db->prepare("DELETE FROM place_translations WHERE place_id=?")->execute([$id]);
+        $stmt2 = $this->db->prepare("INSERT INTO place_translations (place_id, lang_code, name, description, address) VALUES (?, ?, ?, ?, ?)");
+        foreach (['vi','lo','en'] as $lang) {
+            $stmt2->execute([$id, $lang, $data['name_'.$lang], $data['desc_'.$lang], $data['addr_'.$lang]]);
         }
+        
+        $this->db->commit();
+        return true;
+    } catch (Exception $e) {
+        $this->db->rollBack();
+        error_log("Lỗi Update: " . $e->getMessage());
+        return false;
     }
+}
 
     // Lấy địa danh liên quan
     public function getRelatedPlaces($current_id, $lang, $cat_id) {

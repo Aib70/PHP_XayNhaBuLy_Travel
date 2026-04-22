@@ -123,25 +123,22 @@ class AdminController {
         }
 
         // BẠN CẦN CẬP NHẬT MẢNG NÀY ĐẦY ĐỦ NHƯ SAU:
-        $data = [
-            
+       $data = [
             'category_id' => $_POST['category_id'],
             'lat'         => $_POST['lat'],
             'lng'         => $_POST['lng'],
+            'price_range' => $_POST['price_range'], // THÊM DÒNG NÀY ĐỂ LƯU GIÁ
             'image'       => $image_name,
-            'is_special' => isset($_POST['is_special']) ? 1 : 0,
+            'is_special'  => isset($_POST['is_special']) ? 1 : 0,
             
-            // Tiếng Việt
             'name_vi'     => $_POST['name_vi'],
             'desc_vi'     => $_POST['desc_vi'],
             'addr_vi'     => $_POST['addr_vi'],
             
-            // Tiếng Lào (Bổ sung thêm các dòng này)
             'name_lo'     => $_POST['name_lo'],
             'desc_lo'     => $_POST['desc_lo'],
             'addr_lo'     => $_POST['addr_lo'],
             
-            // Tiếng Anh (Bổ sung thêm các dòng này)
             'name_en'     => $_POST['name_en'],
             'desc_en'     => $_POST['desc_en'],
             'addr_en'     => $_POST['addr_en']
@@ -150,8 +147,8 @@ class AdminController {
         require_once '../app/models/AdminModel.php';
         $adminModel = new AdminModel($this->db);
         if ($adminModel->updatePlace($id, $data)) {
-            // Thêm ?msg=updated để hiện thông báo màu xanh
-            header("Location: " . URLROOT . "/admin/index?msg=updated");
+            $redirect = ($_POST['category_id'] == 2) ? '/admin/hotels' : '/admin/index';
+            header("Location: " . URLROOT . $redirect . "?msg=updated");
             exit();
         }
     }
@@ -200,34 +197,46 @@ class AdminController {
         }
     }
 
+    // --- HÀM XÓA MỘT BÌNH LUẬN DUY NHẤT ---
+public function delete_comment($id) {
+    // Đảm bảo dùng WHERE id = ? để chỉ xóa đúng 1 bình luận
+    $stmt = $this->db->prepare("DELETE FROM forum_posts WHERE id = ?");
+    if ($stmt->execute([$id])) {
+        // Quay lại trang quản lý bình luận vừa xem
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
+        exit();
+    } else {
+        die("Lỗi: Không thể xóa bình luận.");
+    }
+}
+
     // --- QUẢN LÝ DIỄN ĐÀN ---
     // Thêm tham số $id vào hàm
 // Trong file app/controllers/AdminController.php
 // --- QUẢN LÝ DIỄN ĐÀN (Đã sửa để lọc theo từng địa danh) ---
 public function forum($place_id = null) {
     if (!empty($place_id)) {
-        // 1. Lấy tên địa danh/khách sạn (tiếng Việt)
+        // Lấy tên khách sạn để hiển thị tiêu đề cho đẹp
         $sqlPlace = "SELECT name FROM place_translations WHERE place_id = ? AND lang_code = 'vi' LIMIT 1";
         $stmtPlace = $this->db->prepare($sqlPlace);
         $stmtPlace->execute([$place_id]);
         $place = $stmtPlace->fetch(PDO::FETCH_ASSOC);
-        $placeName = $place ? $place['name'] : "Không xác định";
+        $placeName = $place ? $place['name'] : "Khách sạn";
 
-        // 2. Lấy danh sách bài viết của địa danh đó
+        // Lấy bình luận của khách sạn này
         $sqlPosts = "SELECT * FROM forum_posts WHERE place_id = ? ORDER BY created_at DESC";
         $stmtPosts = $this->db->prepare($sqlPosts);
         $stmtPosts->execute([$place_id]);
         $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     } else {
         $posts = [];
-        $placeName = "Tất cả địa danh";
+        $placeName = "Tất cả";
     }
 
     $data = [
         'posts' => $posts,
-        'place_name' => $placeName // Truyền tên sang View
+        'place_name' => $placeName
     ];
-
     require_once '../app/views/admin/forum.php';
 }
 
@@ -365,6 +374,27 @@ public function approve_booking($id) {
         header('Location: ' . URLROOT . '/admin/bookings?msg=confirmed');
     } else {
         die("Lỗi: Không thể xác nhận đơn hàng.");
+    }
+}
+
+// --- QUẢN LÝ TRỢ GIÚP (LIÊN HỆ) ---
+
+// 1. Hiển thị danh sách tin nhắn
+public function help_requests() {
+    $stmt = $this->db->query("SELECT * FROM contacts ORDER BY created_at DESC");
+    $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $data = ['requests' => $requests];
+    require_once '../app/views/admin/help/index.php';
+}
+
+// 2. Xóa yêu cầu trợ giúp
+public function delete_help($id) {
+    $stmt = $this->db->prepare("DELETE FROM contacts WHERE id = ?");
+    if ($stmt->execute([$id])) {
+        header('Location: ' . URLROOT . '/admin/help_requests?msg=deleted');
+    } else {
+        die("Lỗi: Không thể xóa yêu cầu này.");
     }
 }
 

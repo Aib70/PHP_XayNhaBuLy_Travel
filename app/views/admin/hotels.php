@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>Quản lý Khách sạn - Xayabury Travel</title>
     <style>
-        /* Sử dụng lại bộ CSS đẹp của trang người dùng */
         body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 30px; background: #f0f2f5; color: #333; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1200px; margin: auto; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); max-width: 1240px; margin: auto; }
         
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         h1 { margin: 0; font-size: 24px; color: #1a202c; }
@@ -26,13 +25,18 @@
 
         .hotel-img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; }
         
-        .btn-action { text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.3s; border: 1px solid transparent; display: inline-block; }
+        .btn-action { text-decoration: none; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; transition: 0.3s; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 4px; }
+        
+        /* Màu sắc cho từng nút */
+        .btn-forum { color: #6c757d; border-color: #6c757d; }
+        .btn-forum:hover { background: #6c757d; color: white; }
+        
         .btn-edit { color: #007bff; border-color: #007bff; }
         .btn-edit:hover { background: #007bff; color: white; }
+        
         .btn-delete { color: #dc3545; border-color: #dc3545; }
         .btn-delete:hover { background: #dc3545; color: white; }
 
-        /* Alert thông báo */
         .alert { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.5s ease forwards; }
         .alert-success { background: #2ecc71; }
         .alert-danger { background: #e74c3c; }
@@ -59,11 +63,11 @@
         <table>
             <thead>
                 <tr>
-                    <th width="60">STT</th>
-                    <th>Hình ảnh</th>
-                    <th>Tên khách sạn</th>
+                    <th width="50">STT</th>
+                    <th width="100">Hình ảnh</th>
+                    <th width="300">Tên khách sạn</th>
                     <th>Địa chỉ</th>
-                    <th width="180">Thao tác</th>
+                    <th width="240">Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,8 +87,13 @@
                         </div>
                     </td>
                     <td>
-                        <div style="display: flex; gap: 5px;">
+                        <div style="display: flex; gap: 8px;">
+                            <a href="<?= URLROOT; ?>/admin/forum/<?= $hotel['id']; ?>" class="btn-action btn-forum">
+                                💬 Diễn đàn
+                            </a>
+                            
                             <a href="<?= URLROOT; ?>/admin/edit/<?= $hotel['id']; ?>" class="btn-action btn-edit">Sửa</a>
+                            
                             <a href="<?= URLROOT; ?>/admin/delete/<?= $hotel['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Xóa khách sạn này?')">Xóa</a>
                         </div>
                     </td>

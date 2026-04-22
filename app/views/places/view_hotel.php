@@ -19,21 +19,26 @@
     <?php endif; ?>
 
     <div style="margin-bottom: 30px;">
-        <h1 style="color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;">
-            🏨 <?= htmlspecialchars($data['place']['name_' . $data['lang']] ?? ($data['place']['name'] ?? 'Unnamed Hotel')); ?>
-        </h1>
-        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-            <div style="color: #f39c12; font-size: 1.3rem;">
-                <?php 
-                    $star_count = $data['place']['star_rating'] ?? 5;
-                    for($i = 1; $i <= 5; $i++) echo ($i <= $star_count) ? '★' : '☆';
-                ?>
-            </div>
-            <div style="background: #e74c3c; color: white; padding: 8px 20px; border-radius: 50px; font-weight: bold;">
-                <?= number_format($data['place']['price'] ?? 0, 0, ',', '.'); ?> <?= ($data['lang'] == 'vi') ? 'VNĐ/đêm' : 'Kip/Night'; ?>
-            </div>
+    <h1 style="color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;">
+        🏨 <?= htmlspecialchars($data['place']['name_' . $data['lang']] ?? ($data['place']['name'] ?? 'Unnamed Hotel')); ?>
+    </h1>
+    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div style="color: #f39c12; font-size: 1.3rem;">
+            <?php 
+                $star_count = $data['place']['star_rating'] ?? 5;
+                for($i = 1; $i <= 5; $i++) echo ($i <= $star_count) ? '★' : '☆';
+            ?>
+        </div>
+        
+        <div style="background: #e74c3c; color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
+            <?php 
+                $price = $data['place']['price_range'] ?? 0;
+                echo number_format($price, 0, ',', '.'); 
+            ?> 
+            <?= ($data['lang'] == 'vi') ? 'VNĐ/đêm' : 'Kip/Night'; ?>
         </div>
     </div>
+</div>
     
     <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
         <div style="flex: 1.5; min-width: 350px;">

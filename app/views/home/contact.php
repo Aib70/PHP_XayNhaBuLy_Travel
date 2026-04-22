@@ -192,6 +192,13 @@
                 <?php if(isset($_SESSION['user_id'])) : ?>
                     <button type="submit" class="btn-submit-contact">Gửi tin nhắn ngay</button>
                 <?php else : ?>
+                    
+<?php if(isset($_GET['msg']) && $_GET['msg'] == 'sent'): ?>
+    <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+        ✅ Tin nhắn của bạn đã được gửi thành công! Admin sẽ phản hồi sớm nhất.
+    </div>
+<?php endif; ?>
+
                     <div class="login-required-box">
                         <p>Vui lòng đăng nhập để gửi yêu cầu hỗ trợ cho chúng tôi.</p>
                         <a href="<?= URLROOT; ?>/user/login" class="btn-login-now">
