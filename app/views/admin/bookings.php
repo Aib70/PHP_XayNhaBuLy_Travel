@@ -1,29 +1,15 @@
 <?php 
     // --- KHỐI LOGIC XỬ LÝ THÔNG BÁO ---
-    $msg_text = "";
-    $msg_bg = "";
-    $msg_color = "";
-    $msg_border = "";
-
+    $msg_text = ""; $msg_bg = ""; $msg_color = ""; $msg_border = "";
     if (isset($_GET['msg'])) {
         switch ($_GET['msg']) {
             case 'confirmed':
                 $msg_text = "Đã xác nhận đơn đặt chỗ thành công!";
-                $msg_bg = "#d4edda";    // Xanh lá nhạt
-                $msg_color = "#155724";  // Chữ xanh đậm
-                $msg_border = "#c3e6cb";
+                $msg_bg = "#d4edda"; $msg_color = "#155724"; $msg_border = "#c3e6cb";
                 break;
             case 'deleted':
                 $msg_text = "Đã xóa đơn đặt chỗ khỏi hệ thống!";
-                $msg_bg = "#f8d7da";    // Đỏ nhạt
-                $msg_color = "#721c24";  // Chữ đỏ đậm
-                $msg_border = "#f5c6cb";
-                break;
-            case 'updated':
-                $msg_text = "Cập nhật thông tin thành công!";
-                $msg_bg = "#d1ecf1";    // Xanh biển nhạt
-                $msg_color = "#0c5460";  // Chữ xanh biển đậm
-                $msg_border = "#bee5eb";
+                $msg_bg = "#f8d7da"; $msg_color = "#721c24"; $msg_border = "#f5c6cb";
                 break;
         }
     }
@@ -36,103 +22,181 @@
     <title>Quản lý Đặt chỗ - Xayabury Travel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .status-badge { padding: 5px 10px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; }
-        .pending { background: #ffeeba; color: #856404; }
-        .confirmed { background: #d4edda; color: #155724; }
-        .cancelled { background: #f8d7da; color: #721c24; }
-        
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 1100px; margin: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #343a40; color: white; text-transform: uppercase; font-size: 0.85rem; }
-        .btn { text-decoration: none; padding: 7px 12px; border-radius: 5px; font-size: 1rem; font-weight: bold; color: white; display: inline-block; border: none; cursor: pointer; }
-        .btn-back { display: inline-block; margin-bottom: 20px; color: #555; text-decoration: none; font-weight: bold; }
+        /* TỔNG THỂ */
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 30px; background-color: #f8fafc; color: #333; }
+        .container { padding: 40px; max-width: 1300px; margin: auto; }
+
+        /* NÚT DASHBOARD */
+        .btn-dashboard {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white !important; padding: 10px 22px; border-radius: 12px;
+            text-decoration: none; font-weight: 600; font-size: 14px;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+            transition: 0.3s; margin-bottom: 30px;
+        }
+        .btn-dashboard:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* Ô TÌM KIẾM */
+        .search-container { position: relative; }
+        .search-input {
+            padding: 8px 15px 8px 35px; border-radius: 20px; 
+            border: 1px solid #ddd; width: 250px; outline: none;
+            transition: 0.3s;
+        }
+        .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .search-icon { position: absolute; left: 12px; top: 11px; color: #aaa; }
+
+        /* TIÊU ĐỀ & HEADER BẢNG */
+        .table-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .title-place { color: #1e3a8a; }
+        .title-hotel { color: #065f46; margin-top: 50px; }
+
+        /* BẢNG PHONG CÁCH THẺ */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+        .admin-table thead th { background-color: #1e293b; color: #f8fafc; padding: 15px; font-size: 12px; text-transform: uppercase; text-align: left; }
+        .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
+        .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
+
+        .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
+        .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.08); }
+        .admin-table td { padding: 15px 20px; border: none; vertical-align: middle; font-size: 14px; }
+        .admin-table td:first-child { border-radius: 12px 0 0 12px; font-weight: bold; color: #334155; text-align: center; }
+        .admin-table td:last-child { border-radius: 0 12px 12px 0; }
+
+        /* TRẠNG THÁI */
+        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .confirmed { background: #dcfce7; color: #166534; }
+        .pending { background: #fef3c7; color: #92400e; }
+
+        /* NÚT */
+        .btn-op { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: white; text-decoration: none; transition: 0.2s; }
+        .btn-confirm { background-color: #10b981; }
+        .btn-delete { background-color: #ef4444; }
+        .btn-op:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
-    <div class="container">
-        <a href="<?= URLROOT ?>/admin" class="btn-back">← Quay lại Quản lý</a>
 
-        <?php if($msg_text != ""): ?>
-            <div id="status-alert" style="background: <?= $msg_bg ?>; color: <?= $msg_color ?>; padding: 15px; border-radius: 8px; border: 1px solid <?= $msg_border ?>; margin-bottom: 20px; font-weight: bold; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-                <span>📢 <?= $msg_text ?></span>
-                <button onclick="this.parentElement.style.display='none'" style="background:none; border:none; color:inherit; cursor:pointer; font-size:22px; font-weight:bold;">&times;</button>
-            </div>
+<div class="container">
+    <a href="<?= URLROOT ?>/admin/dashboard" class="btn-dashboard">
+        <i class="fa-solid fa-house-chimney"></i> Dashboard (Tổng quan)
+    </a>
 
-            <script>
-                // Tự động ẩn thông báo sau 4 giây
-                setTimeout(function() {
-                    var alert = document.getElementById('status-alert');
-                    if(alert) alert.style.display = 'none';
-                }, 4000);
-            </script>
-        <?php endif; ?>
-
-        <h2 style="color: #1565c0; margin-top: 10px;"><i class="fa fa-map-marked-alt"></i> Danh sách đặt Địa danh & Lễ hội</h2>
-        <table border="1" width="100%" style="border-collapse: collapse; margin-bottom: 50px;">
-            <thead>
-                <tr style="background: #34495e; color: white;">
-                    <th>ID</th>
-                    <th>Khách hàng</th>
-                    <th>Địa danh</th>
-                    <th>Ngày tham quan</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($data['placeBookings'] as $row): ?>
-                <tr>
-                    <td><?= $row['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($row['user_name']) ?></strong><br><small><?= $row['phone'] ?></small></td>
-                    <td style="color: #1565c0; font-weight: bold;"><?= htmlspecialchars($row['place_name']) ?></td>
-                    <td><?= $row['booking_date'] ?></td>
-                    <td><span class="status-badge <?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
-                    <td>
-                        <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn" style="background:#17a2b8" title="Xác nhận" onclick="return confirm('Xác nhận đơn đặt chỗ này?')">✔</a>
-                        <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn" style="background:#dc3545" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn XÓA đơn đặt chỗ này không? Hành động này không thể hoàn tác!');">✘</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-
-        <hr style="border: 0; border-top: 2px solid #eee;">
-
-        <h2 style="color: #2e7d32; margin-top: 30px;"><i class="fa fa-hotel"></i> Danh sách đặt Khách sạn</h2>
-        <table border="1" width="100%" style="border-collapse: collapse;">
-            <thead>
-                <tr style="background: #2e7d32; color: white;">
-                    <th>ID</th>
-                    <th>Khách hàng</th>
-                    <th>Khách sạn</th>
-                    <th>Thời gian lưu trú</th>
-                    <th>Số khách</th>
-                    <th>Trạng thái</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($data['hotelBookings'] as $row): ?>
-                <tr>
-                    <td><?= $row['id'] ?></td>
-                    <td><strong><?= htmlspecialchars($row['user_name']) ?></strong><br><small><?= $row['phone'] ?></small></td>
-                    <td style="color: #2e7d32; font-weight: bold;"><?= htmlspecialchars($row['place_name']) ?></td>
-                    <td>
-                        <small>Check-in: <b><?= $row['checkin'] ?></b></small><br>
-                        <small>Check-out: <b><?= $row['checkout'] ?></b></small>
-                    </td>
-                    <td style="text-align: center;"><?= $row['guests'] ?></td>
-                    <td><span class="status-badge <?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
-                    <td>
-                        <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn" style="background:#17a2b8" title="Xác nhận" onclick="return confirm('Xác nhận đặt phòng khách sạn này?')">✔</a>
-                        <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn" style="background:#dc3545" title="Xóa" onclick="return confirm('Bạn có chắc chắn muốn XÓA đơn đặt phòng này?');">✘</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    <div class="table-header-flex">
+        <div class="section-title title-place">
+            <i class="fa fa-map-marked-alt"></i> Danh sách đặt Địa danh & Lễ hội
+        </div>
+        <div class="search-container">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="searchPlace" onkeyup="filterTable('searchPlace', 'tablePlace')" 
+                   placeholder="Tìm địa danh, khách..." class="search-input">
+        </div>
     </div>
+
+    <table class="admin-table" id="tablePlace">
+        <thead>
+            <tr>
+                <th width="60">STT</th>
+                <th>Khách hàng</th>
+                <th>Địa danh</th>
+                <th>Ngày tham quan</th>
+                <th>Trạng thái</th>
+                <th width="120">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $sttPlace = 1; foreach($data['placeBookings'] as $row): ?>
+            <tr>
+                <td>#<?= $sttPlace++ ?></td>
+                <td>
+                    <div style="font-weight: bold; color: #1e293b;"><?= htmlspecialchars($row['user_name']) ?></div>
+                    <small style="color: #64748b;"><i class="fa fa-phone"></i> <?= $row['phone'] ?></small>
+                </td>
+                <td style="color: #2563eb; font-weight: 600;"><?= htmlspecialchars($row['place_name']) ?></td>
+                <td><i class="fa fa-calendar-day"></i> <?= $row['booking_date'] ?></td>
+                <td><span class="status-badge <?= $row['status'] ?>"><?= $row['status'] ?></span></td>
+                <td>
+                    <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn-op btn-confirm" title="Xác nhận"><i class="fa fa-check"></i></a>
+                    <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn-op btn-delete" title="Xóa" onclick="return confirm('Xóa đơn này?')"><i class="fa fa-trash-can"></i></a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <div class="table-header-flex" style="margin-top: 50px;">
+        <div class="section-title title-hotel">
+            <i class="fa fa-hotel"></i> Danh sách đặt Khách sạn
+        </div>
+        <div class="search-container">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="searchHotel" onkeyup="filterTable('searchHotel', 'tableHotel')" 
+                   placeholder="Tìm khách sạn, khách..." class="search-input">
+        </div>
+    </div>
+
+    <table class="admin-table" id="tableHotel">
+        <thead>
+            <tr>
+                <th width="60">STT</th>
+                <th>Khách hàng</th>
+                <th>Khách sạn</th>
+                <th>Thời gian lưu trú</th>
+                <th>Số khách</th>
+                <th>Trạng thái</th>
+                <th width="120">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $sttHotel = 1; foreach($data['hotelBookings'] as $row): ?>
+            <tr>
+                <td>#<?= $sttHotel++ ?></td>
+                <td>
+                    <div style="font-weight: bold; color: #1e293b;"><?= htmlspecialchars($row['user_name']) ?></div>
+                    <small style="color: #64748b;"><i class="fa fa-phone"></i> <?= $row['phone'] ?></small>
+                </td>
+                <td style="color: #059669; font-weight: 600;"><?= htmlspecialchars($row['place_name']) ?></td>
+                <td style="font-size: 12px; line-height: 1.4;">
+                    <span style="color: #059669;">📥 In:</span> <b><?= $row['checkin'] ?></b><br>
+                    <span style="color: #dc2626;">📤 Out:</span> <b><?= $row['checkout'] ?></b>
+                </td>
+                <td style="text-align: center;"><i class="fa fa-users"></i> <?= $row['guests'] ?></td>
+                <td><span class="status-badge <?= $row['status'] ?>"><?= $row['status'] ?></span></td>
+                <td>
+                    <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn-op btn-confirm" title="Xác nhận"><i class="fa fa-check"></i></a>
+                    <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn-op btn-delete" title="Xóa" onclick="return confirm('Xóa đơn này?')"><i class="fa fa-trash-can"></i></a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<script>
+function filterTable(inputId, tableId) {
+    let input = document.getElementById(inputId);
+    let filter = input.value.toUpperCase();
+    let table = document.getElementById(tableId);
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let found = false;
+        let td = tr[i].getElementsByTagName("td");
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                let txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        tr[i].style.display = found ? "" : "none";
+    }
+}
+</script>
+
 </body>
 </html>

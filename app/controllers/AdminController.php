@@ -26,18 +26,22 @@ class AdminController {
     }
 
     // Trang Quản lý KHÁCH SẠN
-    public function hotels() {
-    require_once '../app/models/AdminModel.php';
-    $adminModel = new AdminModel($this->db);
-    
-    // Lấy danh sách khách sạn từ model (Category ID = 2)
-    $hotels = $adminModel->getOnlyHotels(); 
+   // Trang Quản lý KHÁCH SẠN
+public function hotels() {
+    // Thay vì gọi Model, ta viết SQL trực tiếp để lấy cột pt.address (địa chỉ)
+    $sql = "SELECT p.*, pt.name as name_vi, pt.address as addr_vi 
+            FROM places p 
+            JOIN place_translations pt ON p.id = pt.place_id 
+            WHERE p.category_id = 2 AND pt.lang_code = 'vi'
+            ORDER BY p.id DESC";
+            
+    $stmt = $this->db->query($sql);
+    $hotels = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $data = [
         'hotels' => $hotels
     ];
 
-    // Thay đổi dòng này để gọi đúng file view mới tạo ở Bước 1
     require_once '../app/views/admin/hotels.php'; 
 }
 
@@ -216,27 +220,34 @@ public function delete_comment($id) {
 // --- QUẢN LÝ DIỄN ĐÀN (Đã sửa để lọc theo từng địa danh) ---
 public function forum($place_id = null) {
     if (!empty($place_id)) {
-        // Lấy tên khách sạn để hiển thị tiêu đề cho đẹp
+        // TRƯỜNG HỢP 1: Xem bình luận của 1 địa danh cụ thể (Khi nhấn từ nút Diễn đàn ở dòng Địa danh)
         $sqlPlace = "SELECT name FROM place_translations WHERE place_id = ? AND lang_code = 'vi' LIMIT 1";
         $stmtPlace = $this->db->prepare($sqlPlace);
         $stmtPlace->execute([$place_id]);
         $place = $stmtPlace->fetch(PDO::FETCH_ASSOC);
-        $placeName = $place ? $place['name'] : "Khách sạn";
+        $placeName = "📍 Địa danh: " . ($place ? $place['name'] : "Không xác định");
 
-        // Lấy bình luận của khách sạn này
         $sqlPosts = "SELECT * FROM forum_posts WHERE place_id = ? ORDER BY created_at DESC";
         $stmtPosts = $this->db->prepare($sqlPosts);
         $stmtPosts->execute([$place_id]);
-        $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        $posts = [];
-        $placeName = "Tất cả";
+        // TRƯỜNG HỢP 2: Xem TẤT CẢ bình luận (Khi nhấn từ Dashboard)
+        $placeName = "🌍 Tất cả bình luận trên hệ thống";
+        $sqlPosts = "SELECT f.*, pt.name as place_name 
+                     FROM forum_posts f
+                     LEFT JOIN place_translations pt ON f.place_id = pt.place_id AND pt.lang_code = 'vi'
+                     ORDER BY f.status ASC, f.created_at DESC"; // Ưu tiên hiện bài chưa duyệt lên đầu
+        $stmtPosts = $this->db->prepare($sqlPosts);
+        $stmtPosts->execute();
     }
+
+    $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
 
     $data = [
         'posts' => $posts,
         'place_name' => $placeName
     ];
+
     require_once '../app/views/admin/forum.php';
 }
 
@@ -381,10 +392,14 @@ public function approve_booking($id) {
 
 // 1. Hiển thị danh sách tin nhắn
 public function help_requests() {
-    $stmt = $this->db->query("SELECT * FROM contacts ORDER BY created_at DESC");
-    $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    $data = ['requests' => $requests];
+    // Sử dụng LEFT JOIN để lấy thêm số điện thoại từ bảng users dựa trên email khách gửi
+    $sql = "SELECT c.*, u.phone as register_phone 
+            FROM contacts c 
+            LEFT JOIN users u ON c.contact_info = u.email 
+            ORDER BY c.created_at DESC";
+            
+    $stmt = $this->db->query($sql);
+    $data = ['requests' => $stmt->fetchAll(PDO::FETCH_ASSOC)];
     require_once '../app/views/admin/help/index.php';
 }
 
@@ -396,6 +411,37 @@ public function delete_help($id) {
     } else {
         die("Lỗi: Không thể xóa yêu cầu này.");
     }
+}
+
+
+public function dashboard() {
+    // 1. Giữ nguyên các phần đếm cũ
+    $totalPlaces = $this->db->query("SELECT COUNT(*) FROM places WHERE category_id != 2")->fetchColumn();
+    $totalHotels = $this->db->query("SELECT COUNT(*) FROM places WHERE category_id = 2")->fetchColumn();
+    $totalUsers = $this->db->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    $totalContacts = $this->db->query("SELECT COUNT(*) FROM contacts")->fetchColumn();
+    $totalPosts = $this->db->query("SELECT COUNT(*) FROM forum_posts")->fetchColumn();
+
+    // 2. TÁCH RIÊNG ĐẶT CHỖ
+    // Đếm đơn đặt Địa danh (category_id != 2)
+    $sqlPlaceBookings = "SELECT COUNT(*) FROM bookings b JOIN places p ON b.place_id = p.id WHERE p.category_id != 2";
+    $countPlaceBookings = $this->db->query($sqlPlaceBookings)->fetchColumn();
+
+    // Đếm đơn đặt Khách sạn (category_id = 2)
+    $sqlHotelBookings = "SELECT COUNT(*) FROM bookings b JOIN places p ON b.place_id = p.id WHERE p.category_id = 2";
+    $countHotelBookings = $this->db->query($sqlHotelBookings)->fetchColumn();
+
+    $data = [
+        'count_places'          => $totalPlaces,
+        'count_hotels'          => $totalHotels,
+        'count_users'           => $totalUsers,
+        'count_contacts'        => $totalContacts,
+        'count_posts'           => $totalPosts,
+        'count_place_bookings'  => $countPlaceBookings, // Số lượng đặt địa danh
+        'count_hotel_bookings'  => $countHotelBookings  // Số lượng đặt khách sạn
+    ];
+
+    require_once '../app/views/admin/dashboard.php';
 }
 
 }

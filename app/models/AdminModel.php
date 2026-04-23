@@ -227,20 +227,25 @@ public function getAllPlacesExceptHotels() {
 
     // 2. Chỉ lấy Khách sạn (Dùng cho trang Quản lý khách sạn)
     public function getOnlyHotels() {
-        try {
-            $sql = "SELECT p.*, vi.name AS name_vi, lo.name AS name_lo, en.name AS name_en
-                    FROM places p
-                    LEFT JOIN place_translations vi ON vi.place_id = p.id AND vi.lang_code = 'vi'
-                    LEFT JOIN place_translations lo ON lo.place_id = p.id AND lo.lang_code = 'lo'
-                    LEFT JOIN place_translations en ON en.place_id = p.id AND en.lang_code = 'en'
-                    WHERE p.category_id = 2
-                    ORDER BY p.id DESC";
-            $stmt = $this->db->query($sql);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $e) {
-            die("Lỗi lấy danh sách khách sạn: " . $e->getMessage());
-        }
+    try {
+        // Bổ sung thêm vi.address, lo.address, en.address vào phần SELECT
+        $sql = "SELECT p.*, 
+                       vi.name AS name_vi, vi.address AS addr_vi,
+                       lo.name AS name_lo, lo.address AS addr_lo,
+                       en.name AS name_en, en.address AS addr_en
+                FROM places p
+                LEFT JOIN place_translations vi ON vi.place_id = p.id AND vi.lang_code = 'vi'
+                LEFT JOIN place_translations lo ON lo.place_id = p.id AND lo.lang_code = 'lo'
+                LEFT JOIN place_translations en ON en.place_id = p.id AND en.lang_code = 'en'
+                WHERE p.category_id = 2
+                ORDER BY p.id DESC";
+        
+        $stmt = $this->db->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        die("Lỗi lấy danh sách khách sạn: " . $e->getMessage());
     }
+}
 
 // Hàm 2: Chỉ lấy Khách sạn
 public function getPlacesByCategoryForAdmin($cat_id) {

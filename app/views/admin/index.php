@@ -112,7 +112,46 @@
             display: inline-block;
             margin-top: 8px;
         }
+
+        /* Style chung cho nút quay lại Dashboard */
+.btn-dashboard {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    cursor: pointer;
+}
+
+/* Hiệu ứng khi di chuột vào */
+.btn-dashboard:hover {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+    filter: brightness(1.1);
+}
+
+/* Hiệu ứng khi nhấn giữ */
+.btn-dashboard:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Thêm icon khoảng cách nếu bạn dùng FontAwesome */
+.btn-dashboard i {
+    font-size: 16px;
+}
     </style>
+
+    
 </head>
 
 <style>
@@ -170,13 +209,14 @@
     <div class="container">
         <h1>Quản lý địa danh Xayabury</h1>
         
-        <div class="header-actions">
-    <a href="<?php echo URLROOT; ?>/admin/add" class="btn-main btn-add">+ Thêm địa danh mới</a>
-    <a href="<?php echo URLROOT; ?>/admin/bookings" class="btn-main btn-bookings">📋 Danh sách đặt chỗ</a>
-    <a href="<?php echo URLROOT; ?>/admin/users" class="btn-main btn-users">👥 Quản lý người dùng</a>
-    <a href="<?php echo URLROOT; ?>/admin/hotels" class="btn-main" style="background-color: #f39c12;">🏨 Quản lý khách sạn</a>
-    
-    <a href="<?php echo URLROOT; ?>/admin/help_requests" class="btn-main" style="background-color: #e84393;">📩 Quản lý trợ giúp</a>
+      <div class="header-actions">
+    <a href="<?= URLROOT; ?>/admin/add" class="btn-main btn-add">
+        <i class="fas fa-plus"></i> + Thêm địa danh mới
+    </a>
+
+    <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-dashboard">
+        🏠 Dashboard (Tổng quan)
+    </a>
 </div>
 
         <table class="admin-table">

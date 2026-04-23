@@ -19,26 +19,32 @@
     <?php endif; ?>
 
     <div style="margin-bottom: 30px;">
-    <h1 style="color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;">
-        🏨 <?= htmlspecialchars($data['place']['name_' . $data['lang']] ?? ($data['place']['name'] ?? 'Unnamed Hotel')); ?>
-    </h1>
-    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-        <div style="color: #f39c12; font-size: 1.3rem;">
-            <?php 
-                $star_count = $data['place']['star_rating'] ?? 5;
-                for($i = 1; $i <= 5; $i++) echo ($i <= $star_count) ? '★' : '☆';
-            ?>
-        </div>
-        
-        <div style="background: #e74c3c; color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
-            <?php 
-                $price = $data['place']['price_range'] ?? 0;
-                echo number_format($price, 0, ',', '.'); 
-            ?> 
-            <?= ($data['lang'] == 'vi') ? 'VNĐ/đêm' : 'Kip/Night'; ?>
+        <h1 style="color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;">
+            🏨 <?= htmlspecialchars($data['place']['name_' . $data['lang']] ?? ($data['place']['name'] ?? 'Unnamed Hotel')); ?>
+        </h1>
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <div style="color: #f39c12; font-size: 1.3rem;">
+                <?php 
+                    $star_count = $data['place']['star_rating'] ?? 5;
+                    for($i = 1; $i <= 5; $i++) echo ($i <= $star_count) ? '★' : '☆';
+                ?>
+            </div>
+            
+            <div style="background: #e74c3c; color: white; padding: 8px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);">
+                <?php 
+                    $price = $data['place']['price_range'] ?? 0;
+                    // Kiểm tra nếu giá là số và lớn hơn 0
+                    if (!empty($price) && is_numeric($price) && $price > 0) {
+                        echo number_format((float)$price, 0, ',', '.'); 
+                        echo ($data['lang'] == 'vi') ? ' VNĐ/đêm' : ' Kip/Night';
+                    } else {
+                        // Nếu giá bị trống hoặc bằng 0 thì hiện thông báo này
+                        echo ($data['lang'] == 'vi') ? 'Liên hệ để biết giá' : 'Contact for price';
+                    }
+                ?> 
+            </div>
         </div>
     </div>
-</div>
     
     <div style="display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start;">
         <div style="flex: 1.5; min-width: 350px;">
@@ -50,53 +56,53 @@
                 <p><strong>📍 <?= $data['text']['address']; ?>:</strong> <?= htmlspecialchars($data['place']['addr_' . $data['lang']] ?? ''); ?></p>
             </div>
 
-           <div style="background: #fff; padding: 25px; border-radius: 15px; border: 2px solid #f39c12; margin-top: 30px; box-shadow: 0 10px 25px rgba(243, 156, 18, 0.1);">
-    <h3 style="margin-top: 0; color: #f39c12; display: flex; align-items: center; gap: 10px;">
-        🛏️ <?= ($data['lang'] == 'vi') ? 'Đặt phòng khách sạn' : 'Hotel Booking'; ?>
-    </h3>
-    
-    <?php if(isset($_SESSION['user_id'])): ?>
-        <form action="<?= URLROOT; ?>/place/book" method="POST">
-            <input type="hidden" name="place_id" value="<?= $data['place']['id']; ?>">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                <div>
-                    <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Người đặt:</label>
-                    <input type="text" name="name" value="<?= $_SESSION['user_name']; ?>" readonly style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Số điện thoại:</label>
-                    <input type="tel" name="phone" required placeholder="Nhập số điện thoại" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-                </div>
-            </div>
+            <div style="background: #fff; padding: 25px; border-radius: 15px; border: 2px solid #f39c12; margin-top: 30px; box-shadow: 0 10px 25px rgba(243, 156, 18, 0.1);">
+                <h3 style="margin-top: 0; color: #f39c12; display: flex; align-items: center; gap: 10px;">
+                    🛏️ <?= ($data['lang'] == 'vi') ? 'Đặt phòng khách sạn' : 'Hotel Booking'; ?>
+                </h3>
+                
+                <?php if(isset($_SESSION['user_id'])): ?>
+                    <form action="<?= URLROOT; ?>/place/book" method="POST">
+                        <input type="hidden" name="place_id" value="<?= $data['place']['id']; ?>">
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Người đặt:</label>
+                                <input type="text" name="name" value="<?= $_SESSION['user_name']; ?>" readonly style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Số điện thoại:</label>
+                                <input type="tel" name="phone" required placeholder="Nhập số điện thoại" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                            </div>
+                        </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <div>
-                    <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Ngày nhận phòng:</label>
-                    <input type="date" name="checkin" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Ngày trả phòng:</label>
-                    <input type="date" name="checkout" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-                </div>
-                <div>
-                    <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Số khách:</label>
-                    <input type="number" name="guests" min="1" value="1" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-                </div>
-            </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Ngày nhận phòng:</label>
+                                <input type="date" name="checkin" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Ngày trả phòng:</label>
+                                <input type="date" name="checkout" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.85rem; color: #666; font-weight: bold;">Số khách:</label>
+                                <input type="number" name="guests" min="1" value="1" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+                            </div>
+                        </div>
 
-            <button type="submit" style="width: 100%; padding: 18px; background: #f39c12; color: white; border: none; font-weight: bold; border-radius: 10px; cursor: pointer; font-size: 1.1rem; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);"
-                    onmouseover="this.style.background='#d35400'" onmouseout="this.style.background='#f39c12'">
-                GỬI YÊU CẦU ĐẶT PHÒNG
-            </button>
-        </form>
-    <?php else: ?>
-        <div style="text-align: center; padding: 20px; border: 1px dashed #ccc; border-radius: 10px;">
-            <p>Vui lòng <strong>đăng nhập</strong> để đặt phòng.</p>
-            <a href="<?= URLROOT; ?>/user/login" style="color: #f39c12; font-weight: bold; text-decoration: none;">🔑 Đăng nhập ngay</a>
-        </div>
-    <?php endif; ?>
-</div>
+                        <button type="submit" style="width: 100%; padding: 18px; background: #f39c12; color: white; border: none; font-weight: bold; border-radius: 10px; cursor: pointer; font-size: 1.1rem; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);"
+                                onmouseover="this.style.background='#d35400'" onmouseout="this.style.background='#f39c12'">
+                            GỬI YÊU CẦU ĐẶT PHÒNG
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <div style="text-align: center; padding: 20px; border: 1px dashed #ccc; border-radius: 10px;">
+                        <p>Vui lòng <strong>đăng nhập</strong> để đặt phòng.</p>
+                        <a href="<?= URLROOT; ?>/user/login" style="color: #f39c12; font-weight: bold; text-decoration: none;">🔑 Đăng nhập ngay</a>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div style="flex: 1; min-width: 300px;">
@@ -115,5 +121,6 @@
     </div>
     
     <hr style="margin: 60px 0; border: 0; border-top: 1px solid #eee;">
-    ...
 </div>
+
+<?php require_once '../app/views/inc/footer.php'; ?>

@@ -102,7 +102,7 @@ public function login_process() {
                     $_SESSION['admin_name'] = $admin['fullname'];
                     $_SESSION['user_email'] = $admin['email'];
                     $_SESSION['role'] = 'admin';
-                    header('Location: ' . URLROOT . '/admin');
+                    header('Location: ' . URLROOT . '/admin/dashboard');
                     exit();
                 } else {
                     $error_msg = $languages[$lang]['error_wrong_pass'];
