@@ -2,35 +2,46 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Diễn đàn - Xayabury Travel</title>
+    <title>Quản lý Bình luận - Xayabury Travel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* TỔNG THỂ */
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 30px; background-color: #f8fafc; color: #333; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
         .container { padding: 40px; max-width: 1200px; margin: auto; }
 
-        /* NÚT DASHBOARD ĐỒNG BỘ */
+        /* --- 1. NAVIGATION BAR ĐỒNG BỘ --- */
+        .admin-nav {
+            background: #1e293b; color: white; padding: 15px 35px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
+        .admin-nav a:hover { color: white; }
+        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
+
+        /* --- 2. HEADER & SEARCH --- */
+        .admin-header-wrapper {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 30px; margin-top: 20px;
+        }
+        .header-left h1 { margin: 0; font-size: 28px; color: #1e293b; font-weight: 800; display: flex; align-items: center; gap: 12px; }
+        
         .btn-dashboard {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            color: white !important; padding: 10px 22px; border-radius: 12px;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white !important; padding: 11px 22px; border-radius: 12px;
             text-decoration: none; font-weight: 600; font-size: 14px;
             display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-            transition: 0.3s; margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); transition: 0.3s; margin-top: 15px;
         }
         .btn-dashboard:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* TIÊU ĐỀ & SEARCH */
-        .header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
-        h1 { margin: 0; font-size: 28px; color: #1e293b; font-weight: 800; display: flex; align-items: center; gap: 12px; }
-        
-        .search-box { position: relative; }
-        .search-box input {
-            padding: 10px 15px 10px 40px; border-radius: 12px; border: 1px solid #ddd;
-            width: 300px; outline: none; transition: 0.3s; font-size: 14px;
+        .search-box-wrapper { position: relative; }
+        .search-box-wrapper input {
+            padding: 12px 15px 12px 42px; border-radius: 12px; border: 1px solid #ddd;
+            width: 300px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s;
         }
-        .search-box input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
-        .search-box i { position: absolute; left: 15px; top: 12px; color: #aaa; }
+        .search-box-wrapper input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        .search-box-wrapper i { position: absolute; left: 15px; top: 14px; color: #94a3b8; }
 
         .filter-info { 
             background: #fff; padding: 15px 20px; border-radius: 10px; 
@@ -39,7 +50,7 @@
             font-weight: bold; color: #475569;
         }
 
-        /* BẢNG PHONG CÁCH THẺ */
+        /* --- 3. BẢNG DỮ LIỆU --- */
         .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
         .admin-table thead th { 
             background-color: #1e293b; color: #f8fafc; padding: 18px; 
@@ -73,15 +84,26 @@
 </head>
 <body>
 
-<div class="container">
-    <a href="<?= URLROOT ?>/admin/dashboard" class="btn-dashboard">
-        <i class="fa-solid fa-house-chimney"></i> Dashboard (Tổng quan)
-    </a>
+    <div class="admin-nav">
+        <div>
+            <strong>XAYABURY ADMIN</strong> | Chào, <?= htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>
+        </div>
+        <div>
+            <a href="<?= URLROOT; ?>/home" target="_blank"><i class="fa-solid fa-earth-asia"></i> Xem trang chủ</a>
+            <a href="<?= URLROOT; ?>/auth/logout" class="btn-logout" onclick="return confirm('Đăng xuất?')"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+        </div>
+    </div>
 
-    <div class="header-flex">
-        <h1><i class="fa-solid fa-comments" style="color: #8b5cf6;"></i> Quản lý Bình Luận</h1>
-        
-        <div class="search-box">
+<div class="container">
+    <div class="admin-header-wrapper">
+        <div class="header-left">
+            <h1><i class="fa-solid fa-comments" style="color: #8b5cf6;"></i> Quản lý Bình Luận</h1>
+            <a href="<?= URLROOT ?>/admin/dashboard" class="btn-dashboard">
+                <i class="fa-solid fa-house-chimney"></i> Dashboard
+            </a>
+        </div>
+
+        <div class="search-box-wrapper">
             <i class="fa fa-search"></i>
             <input type="text" id="forumSearch" onkeyup="filterForum()" placeholder="Tìm tên, địa điểm, nội dung...">
         </div>
@@ -162,13 +184,12 @@ function filterForum() {
         let td = tr[i].getElementsByTagName("td");
         
         // Kiểm tra cột Người đăng (0) và Nội dung (1)
-        for (let j = 0; j < 2; j++) {
-            if (td[j]) {
-                let txtValue = td[j].textContent || td[j].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    found = true;
-                    break;
-                }
+        if (td[0] || td[1]) {
+            let authorInfo = td[0].textContent || td[0].innerText;
+            let contentInfo = td[1].textContent || td[1].innerText;
+            
+            if (authorInfo.toUpperCase().indexOf(filter) > -1 || contentInfo.toUpperCase().indexOf(filter) > -1) {
+                found = true;
             }
         }
         tr[i].style.display = found ? "" : "none";

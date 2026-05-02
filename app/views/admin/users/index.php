@@ -6,61 +6,58 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* TỔNG THỂ */
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 30px; background-color: #f8fafc; color: #333; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
         .container { padding: 40px; max-width: 1300px; margin: auto; }
 
-        /* NÚT DASHBOARD ĐỒNG BỘ */
-        .btn-dashboard {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            color: white !important; padding: 10px 22px; border-radius: 12px;
-            text-decoration: none; font-weight: 600; font-size: 14px;
-            display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
-            transition: 0.3s; margin-bottom: 25px;
+        /* --- 1. CẬP NHẬT NAVIGATION BAR (TRÊN CÙNG) --- */
+        .admin-nav {
+            background: #1e293b; color: white; padding: 15px 35px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .btn-dashboard:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
+        .admin-nav a:hover { color: white; }
+        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
 
-        /* HEADER & SEARCH */
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        /* --- 2. HEADER ACTIONS & SEARCH --- */
+        .admin-header-wrapper {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 35px; margin-top: 20px;
+        }
         h1 { margin: 0; font-size: 28px; color: #1e293b; font-weight: 800; }
         
-        .header-actions { display: flex; align-items: center; gap: 20px; }
-        
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+
         .search-box { position: relative; }
         .search-box input {
-            padding: 11px 15px 11px 40px; border-radius: 12px; border: 1px solid #ddd;
+            padding: 12px 15px 12px 42px; border-radius: 12px; border: 1px solid #ddd;
             width: 280px; outline: none; transition: 0.3s; font-size: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         .search-box input:focus { border-color: #6f42c1; box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1); }
-        .search-box i { position: absolute; left: 15px; top: 13px; color: #aaa; }
+        .search-box i { position: absolute; left: 15px; top: 14px; color: #aaa; }
 
-        .btn-add { 
-            background: linear-gradient(135deg, #6f42c1 0%, #59359a 100%);
-            color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; 
-            font-weight: bold; font-size: 14px; box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
-            transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;
+        .btn-main {
+            text-decoration: none; padding: 12px 20px; border-radius: 12px;
+            font-weight: bold; font-size: 14px; color: white; transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
         }
-        .btn-add:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-add { background: linear-gradient(135deg, #6f42c1 0%, #59359a 100%); box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3); }
+        .btn-dashboard { background: linear-gradient(135deg, #64748b 0%, #475569 100%); box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); }
+        .btn-main:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* BẢNG PHONG CÁCH THẺ (CARD TABLE) */
+        /* BẢNG PHONG CÁCH THẺ */
         .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
-        .admin-table thead th { 
-            background-color: #1e293b; color: #f8fafc; padding: 18px; 
-            font-size: 13px; text-transform: uppercase; text-align: left; border: none; 
-        }
+        .admin-table thead th { background-color: #1e293b; color: #f8fafc; padding: 18px; font-size: 13px; text-transform: uppercase; text-align: left; }
         .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
         .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
-
         .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
         .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-
         .admin-table td { padding: 20px; border: none; vertical-align: middle; }
         .admin-table td:first-child { border-radius: 12px 0 0 12px; text-align: center; }
         .admin-table td:last-child { border-radius: 0 12px 12px 0; }
 
-        .badge-stt { background: #334155; color: #fff; padding: 5px 12px; border-radius: 6px; font-weight: bold; }
-
-        /* NÚT THAO TÁC */
+        .badge-stt { background: #334155; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
         .btn-action { text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.3s; border: 1.5px solid; display: inline-block; margin-right: 5px; }
         .btn-view { color: #28a745; border-color: #28a745; }
         .btn-view:hover { background: #28a745; color: white; }
@@ -78,6 +75,16 @@
 </head>
 <body>
 
+    <div class="admin-nav">
+        <div>
+            <strong>XAYABURY ADMIN</strong> | Chào, <?= htmlspecialchars($_SESSION['user_name'] ?? 'Admin'); ?>
+        </div>
+        <div>
+            <a href="<?= URLROOT; ?>/home" target="_blank"><i class="fa-solid fa-earth-asia"></i> Xem trang chủ</a>
+            <a href="<?= URLROOT; ?>/auth/logout" class="btn-logout" onclick="return confirm('Đăng xuất?')"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a>
+        </div>
+    </div>
+
     <?php if(isset($_GET['msg'])): ?>
         <div id="alert" class="alert <?= (strpos($_GET['msg'], 'deleted') !== false) ? 'alert-danger' : 'alert-success' ?>">
             <?php 
@@ -90,20 +97,22 @@
     <?php endif; ?>
 
     <div class="container">
-        <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-dashboard">
-            <i class="fa-solid fa-house-chimney"></i> Dashboard (Tổng quan)
-        </a>
-        
-        <div class="admin-header">
-            <h1>Quản lý người dùng</h1>
-            <div class="header-actions">
-                <div class="search-box">
-                    <i class="fa fa-search"></i>
-                    <input type="text" id="userInput" onkeyup="searchUsers()" placeholder="Tìm theo tên, email, sđt...">
+        <div class="admin-header-wrapper">
+            <div class="header-left">
+                <h1>Quản lý người dùng</h1>
+                <div class="header-actions" style="margin-top: 15px;">
+                    <a href="<?= URLROOT ?>/admin/add_user" class="btn-main btn-add">
+                        <i class="fa-solid fa-user-plus"></i> Thêm người dùng mới
+                    </a>
+                    <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-main btn-dashboard">
+                        <i class="fa-solid fa-house"></i> Dashboard
+                    </a>
                 </div>
-                <a href="<?= URLROOT ?>/admin/add_user" class="btn-add">
-                    <i class="fa-solid fa-user-plus"></i> Thêm người dùng mới
-                </a>
+            </div>
+
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" id="userInput" onkeyup="searchUsers()" placeholder="Tìm theo tên, email, sđt...">
             </div>
         </div>
 
@@ -152,8 +161,6 @@
         for (let i = 1; i < tr.length; i++) {
             let found = false;
             let td = tr[i].getElementsByTagName("td");
-            
-            // Tìm ở cột Họ tên (1), Email (2) và SĐT (3)
             for (let j = 1; j <= 3; j++) {
                 if (td[j]) {
                     let txtValue = td[j].textContent || td[j].innerText;

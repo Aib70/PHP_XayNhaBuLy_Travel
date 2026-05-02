@@ -23,7 +23,7 @@
             display: none;
             position: absolute;
             right: 0;
-            background-color: #004a7c; /* Màu xanh đậm giống ảnh mẫu */
+            background-color: #004a7c; 
             min-width: 220px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
             z-index: 1100;
@@ -52,11 +52,7 @@
         .lang-switcher a { color: #fff; text-decoration: none; font-size: 13px; margin: 0 5px; }
         .lang-switcher a.active { color: #ffcc00; font-weight: bold; }
     </style>
-    
 </head>
- 
-
-
 
 <body>
 
@@ -65,14 +61,17 @@
     $menu = [
         'vi' => [
             'home' => 'Trang chủ', 'places' => 'Địa danh', 'festivals' => 'Các lễ hội', 'about' => 'Về chúng tôi', 'logout' => 'Đăng xuất',
+            'profile' => 'Thông tin cá nhân', // Mới thêm
             'history_place' => 'Lịch sử đặt địa danh', 'history_hotel' => 'Lịch sử đặt khách sạn', 'my_reviews' => 'Bình luận của tôi'
         ],
         'lo' => [
             'home' => 'ໜ້າຫຼັກ', 'places' => 'ສະຖານທີ່', 'festivals' => 'ບຸນປະເພນີ', 'about' => 'ກ່ຽວກັບພວກເຮົາ', 'logout' => 'ອອກຈາກລະບົບ',
+            'profile' => 'ຂໍ້ມູນສ່ວນຕົວ', // Mới thêm
             'history_place' => 'ປະຫວັດການຈອງສະຖານທີ່', 'history_hotel' => 'ປະຫວັດການຈອງໂຮງແຮມ', 'my_reviews' => 'ຄຳຄິດເຫັນຂອງຂ້ອຍ'
         ],
         'en' => [
             'home' => 'Home', 'places' => 'Places', 'festivals' => 'Festivals', 'about' => 'About Us', 'logout' => 'Logout',
+            'profile' => 'Personal Information', // Mới thêm
             'history_place' => 'Place Bookings', 'history_hotel' => 'Hotel Bookings', 'my_reviews' => 'My Reviews'
         ]
     ];
@@ -102,6 +101,9 @@
                     </div>
                     <div class="dropdown-content">
                         <div class="dropdown-header"><?php echo ($lang == 'vi') ? 'Tài khoản của tôi' : 'My Account'; ?></div>
+                        
+                        <a href="<?php echo URLROOT; ?>/user/profile">👤 <?php echo $text['profile']; ?></a>
+                        
                         <a href="<?php echo URLROOT; ?>/user/history_places">📍 <?php echo $text['history_place']; ?></a>
                         <a href="<?php echo URLROOT; ?>/user/history_hotels">🏨 <?php echo $text['history_hotel']; ?></a>
                         <a href="<?php echo URLROOT; ?>/user/my_reviews">💬 <?php echo $text['my_reviews']; ?></a>
@@ -114,18 +116,17 @@
                 <li><a href="<?php echo URLROOT; ?>/user/login">Login</a></li>
             <?php endif; ?>
         </ul>
-        
 
-<div id="google_translate_element" style="padding: 20px; text-align: right;"></div>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'vi', 
-    includedLanguages: 'vi,lo,en', // Chỉ cho phép dịch sang Tiếng Việt, Lào, Anh
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-  }, 'google_translate_element');
-}
-</script>
-       <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</div>
+        <div id="google_translate_element" style="padding: 20px; text-align: right;"></div>
+        <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({
+            pageLanguage: 'vi', 
+            includedLanguages: 'vi,lo,en', 
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          }, 'google_translate_element');
+        }
+        </script>
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </div>
 </nav>

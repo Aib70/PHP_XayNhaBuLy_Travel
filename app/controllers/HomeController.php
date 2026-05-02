@@ -73,11 +73,11 @@ class HomeController {
         }
 
         // 1. ใส่ API Key ของคุณที่นี่
-        $apiKey = "AIzaSyDBUT3RzhDiVYwEmf2_oskpFd--uOCbFaM"; 
+        $apiKey = "AIzaSyDr2SkxAV92tnh4az9P6doYV-Ws7ffSLSE"; 
         
         // 2. ปรับ URL เป็น v1beta และใช้ชื่อโมเดลแบบเต็ม
         // โครงสร้างที่ถูกต้อง: .../v1beta/models/gemini-1.5-flash:generateContent?key=...
-        $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=" . $apiKey;
+        $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=". $apiKey;
 
         $payload = [
             "contents" => [

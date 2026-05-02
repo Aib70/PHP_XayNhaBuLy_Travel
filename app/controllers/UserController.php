@@ -238,4 +238,67 @@ public function history_places() {
     }
 }
 
+public function profile() {
+    // 1. Kiểm tra đăng nhập (Bắt buộc)
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . URLROOT . '/user/login');
+        exit();
+    }
+
+    // 2. Gọi Model để lấy thông tin mới nhất của user
+    require_once '../app/models/UserModel.php';
+    $userModel = new UserModel($this->db);
+    $userData = $userModel->getUserById($_SESSION['user_id']);
+
+    // 3. Truyền dữ liệu ra trang View
+    $data = [
+        'title' => 'Thông tin cá nhân',
+        'user' => $userData
+    ];
+
+    require_once '../app/views/user/profile.php';
+}
+
+public function edit_profile() {
+    if (!isset($_SESSION['user_id'])) {
+        header('Location: ' . URLROOT . '/user/login');
+        exit();
+    }
+
+    $userModel = new UserModel($this->db);
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $id = $_SESSION['user_id'];
+        $fullname = trim($_POST['fullname']);
+        $phone = trim($_POST['phone']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
+
+        // Logic xử lý mật khẩu
+        $hashed_password = null;
+        if (!empty($password)) {
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        $updateData = [
+            'id' => $id,
+            'fullname' => $fullname,
+            'phone' => $phone,
+            'email' => $email,
+            'password' => $hashed_password // Sẽ là null nếu không đổi
+        ];
+
+        if ($userModel->updateProfileFull($updateData)) {
+            $_SESSION['user_name'] = $fullname; // Cập nhật lại tên trên menu
+            header('Location: ' . URLROOT . '/user/profile?msg=updated');
+        } else {
+            die("Lỗi: Email có thể đã tồn tại hoặc lỗi hệ thống.");
+        }
+    } else {
+        $userData = $userModel->getUserById($_SESSION['user_id']);
+        $data = ['user' => $userData];
+        require_once '../app/views/user/edit_profile.php';
+    }
+}
+
 }

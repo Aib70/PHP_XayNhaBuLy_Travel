@@ -158,7 +158,7 @@
                 <i class="fas fa-phone-alt"></i>
                 <div>
                     <strong>Hotline / WhatsApp</strong>
-                    <p>+856 20 55 XXX XXX</p>
+                    <p>+856 20 96 776 795</p>
                 </div>
             </div>
             <div class="info-item">
