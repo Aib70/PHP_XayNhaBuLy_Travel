@@ -1,0 +1,17 @@
+ 
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f4f7f6; }
+        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+        .lang-block { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        label { font-weight: bold; display: block; margin-top: 10px; color: #2c3e50; }
+        
+        .special-box { background: #e8f4fd; padding: 20px; border-radius: 10px; border: 1px solid #b8daff; margin: 25px 0; }
+        .special-box h3 { margin-top: 0; color: #004085; font-size: 18px; }
+        .checkbox-container { display: flex; align-items: center; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .checkbox-container input { width: 22px; height: 22px; margin-right: 12px; cursor: pointer; }
+
+        button { background: #28a745; color: white; padding: 14px 30px; border: none; cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 16px; transition: 0.3s; width: auto; }
+        button:hover { background: #218838; transform: translateY(-2px); }
+        .img-preview { margin: 15px 0; padding: 15px; border: 1px dashed #bbb; border-radius: 8px; background: #fafafa; }
+        .btn-cancel { margin-left: 15px; color: #666; text-decoration: none; font-weight: bold; }
+   

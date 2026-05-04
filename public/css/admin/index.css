@@ -1,0 +1,79 @@
+
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
+        .container { padding: 40px; max-width: 1300px; margin: auto; }
+
+        /* NAVIGATION BAR */
+        .admin-nav {
+            background: #1e293b; color: white; padding: 15px 35px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
+        .admin-nav a:hover { color: white; }
+        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
+
+        /* HEADER WRAPPER - PHÂN TÁCH TIÊU ĐỀ VÀ TÌM KIẾM */
+        .admin-header-wrapper {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 35px; margin-top: 20px;
+        }
+        .header-left h1 { color: #1e293b; font-size: 28px; font-weight: 800; margin: 0 0 15px 0; }
+        
+        .header-actions { display: flex; align-items: center; gap: 12px; }
+
+        /* NÚT BẤM */
+        .btn-main {
+            text-decoration: none; padding: 12px 20px; border-radius: 12px;
+            font-weight: bold; font-size: 14px; color: white; transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
+        }
+        .btn-add { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
+        .btn-dashboard { background: linear-gradient(135deg, #64748b 0%, #475569 100%); box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); }
+        .btn-main:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* Ô TÌM KIẾM CẬP NHẬT */
+        .search-box-wrapper { position: relative; }
+        .search-box-wrapper input {
+            padding: 12px 15px 12px 42px; border-radius: 12px; border: 1px solid #ddd;
+            width: 300px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+        .search-box-wrapper input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .search-box-wrapper i { position: absolute; left: 15px; top: 14px; color: #94a3b8; }
+
+        /* BẢNG DỮ LIỆU CARD-STYLE */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
+        .admin-table thead th { background-color: #1e293b; color: #f8fafc; padding: 18px; font-size: 13px; text-transform: uppercase; text-align: left; border: none; }
+        .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
+        .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
+
+        .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
+        .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .admin-table td { padding: 18px; vertical-align: middle; border: none; }
+        .admin-table td:first-child { border-radius: 12px 0 0 12px; text-align: center; }
+        .admin-table td:last-child { border-radius: 0 12px 12px 0; }
+
+        .badge-stt { background: #334155; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
+        
+        .name-container div { margin-bottom: 4px; }
+        .name-vi { font-weight: bold; color: #1e293b; font-size: 15px; }
+        .name-lo { font-size: 13px; color: #64748b; }
+        .name-en { font-size: 13px; color: #3b82f6; font-weight: 500; }
+
+        /* THAO TÁC */
+        .btn-action { text-decoration: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: bold; margin-right: 5px; display: inline-block; border: 1.5px solid; transition: 0.2s; }
+        .btn-view { color: #10b981; border-color: #10b981; }
+        .btn-view:hover { background: #10b981; color: white; }
+        .btn-edit { color: #3b82f6; border-color: #3b82f6; }
+        .btn-edit:hover { background: #3b82f6; color: white; }
+        .btn-delete { color: #ef4444; border-color: #ef4444; }
+        .btn-delete:hover { background: #ef4444; color: white; }
+        
+        .btn-forum-small { background: #8b5cf6; color: white; padding: 7px 15px; border-radius: 20px; font-size: 11px; text-decoration: none; display: inline-block; margin-top: 10px; font-weight: bold; transition: 0.3s; }
+        .btn-forum-small:hover { filter: brightness(1.2); transform: scale(1.05); }
+
+        /* TOAST ALERT */
+        .alert-toast { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.5s ease forwards; display: flex; align-items: center; gap: 10px; }
+        .alert-success { background: #10b981; }
+        .alert-danger { background: #ef4444; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    

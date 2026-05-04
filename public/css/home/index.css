@@ -1,0 +1,114 @@
+
+.video-banner {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-bottom: 30px;
+}
+
+.video-banner iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+.video-overlay h2 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+
+/* GRID & CARDS */
+.place-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 0 20px 50px 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.place-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform .3s;
+    display: flex;
+    flex-direction: column; /* Đảm bảo nội dung trải dài */
+    height: 100%;
+}
+
+.place-card:hover {
+    transform: translateY(-10px);
+}
+
+.place-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #eee;
+}
+
+.place-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Đẩy nút bấm xuống đáy card */
+}
+
+.place-title {
+    font-size: 1.3rem;
+    margin: 0 0 10px;
+    color: #222;
+    font-weight: bold;
+}
+
+.place-desc {
+    font-size: .9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    /* Cắt chữ nếu quá 3 dòng */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.btn-detail {
+    display: inline-block;
+    margin-top: auto; /* Tự động đẩy nút xuống dưới cùng */
+    padding: 10px 20px;
+    background: #ffcc00;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.btn-detail:hover {
+    background: #333;
+    color: #ffcc00;
+}

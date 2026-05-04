@@ -11,9 +11,15 @@
     </style>
 </head>
 <body>
+    <?php
+    if (!isset($data) || !isset($data['user'])) {
+        echo '<div style="max-width:500px;margin:80px auto;padding:20px;background:#ffe6e6;color:#990000;border:1px solid #ffb3b3;border-radius:10px;font-family:Arial,sans-serif;">Lỗi: dữ liệu người dùng chưa được truyền vào view.</div>';
+        exit;
+    }
+    ?>
     <div class="form-container">
         <h2>Chỉnh sửa người dùng</h2>
-        <form action="<?= URLROOT ?>/admin/update_user/<?= $data['user']['id'] ?>" method="POST">
+        <form action="<?= URLROOT ?>/admin/update_user/<?= htmlspecialchars($data['user']['id']) ?>" method="POST">
             <label>Họ và tên</label>
             <input type="text" name="fullname" value="<?= htmlspecialchars($data['user']['fullname']) ?>" required>
             

@@ -3,6 +3,12 @@
         💬 <?= $data['text']['comment_title'] ?? 'Bình luận & Đánh giá'; ?>
     </h3>
 
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
+
     <?php if(isset($_SESSION['user_id'])): ?>
         <form action="<?= URLROOT; ?>/place/add_review/<?= $data['place']['id']; ?>" method="POST" style="margin-bottom: 50px;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">

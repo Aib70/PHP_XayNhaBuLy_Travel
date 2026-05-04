@@ -3,20 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Thêm địa danh mới</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; line-height: 1.6; background-color: #f4f4f4; }
-        .container { background: white; padding: 30px; border-radius: 10px; max-width: 900px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .lang-block { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-        .vi { border-left: 5px solid red; }
-        .lo { border-left: 5px solid blue; }
-        .en { border-left: 5px solid green; }
-        input, textarea, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        label { font-weight: bold; display: block; margin-top: 10px; color: #333; }
-        .upload-section { background: #fff3cd; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba; }
-        button { background: #28a745; color: white; padding: 15px 25px; border: none; cursor: pointer; font-size: 16px; border-radius: 5px; font-weight: bold; width: 100%; transition: 0.3s; }
-        button:hover { background: #218838; }
-        .back-link { display: inline-block; margin-top: 15px; text-decoration: none; color: #666; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/admin/add.css">
+   
 </head>
 <body>
     <div class="container">

@@ -5,15 +5,21 @@
     <title>Chi tiết người dùng</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 40px; }
-        .card { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .card { background: white; max-width: 500px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         .info-group { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
         label { font-weight: bold; color: #666; display: block; }
         .btn-back { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
     </style>
 </head>
 <body>
+    <?php
+    if (!isset($data) || !isset($data['user'])) {
+        echo '<div style="max-width:500px;margin:80px auto;padding:20px;background:#ffe6e6;color:#990000;border:1px solid #ffb3b3;border-radius:10px;font-family:Arial,sans-serif;">Lỗi: dữ liệu người dùng chưa được truyền vào view.</div>';
+        exit;
+    }
+    ?>
     <div class="card">
-        <h2>Thông tin chi tiết #<?= $data['user']['id'] ?></h2>
+        <h2>Thông tin chi tiết #<?= htmlspecialchars($data['user']['id']) ?></h2>
         
         <div class="info-group">
             <label>Họ và tên:</label>

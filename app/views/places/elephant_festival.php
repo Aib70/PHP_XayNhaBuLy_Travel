@@ -1,3 +1,8 @@
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
 <section class="festival-hero" style="position: relative; height: 80vh; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white;">
     <img src="<?= URLROOT; ?>/public/img/elephant-hero.jpg" style="position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: -1; filter: brightness(0.6);">
     <div style="text-align: center; max-width: 800px; padding: 20px;">

@@ -1,3 +1,8 @@
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
 <div style="max-width: 800px; margin: 30px auto; padding: 20px;">
     <h2>💬 <?php echo ($data['lang'] == 'vi') ? "Diễn đàn thảo luận" : "Discussion Forum"; ?></h2>
 

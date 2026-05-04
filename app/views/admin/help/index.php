@@ -4,75 +4,7 @@
     <meta charset="UTF-8">
     <title>Quản lý Trợ giúp - Xayabury Travel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* TỔNG THỂ */
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
-        .container { padding: 40px; max-width: 1300px; margin: auto; }
-
-        /* --- 1. NAVIGATION BAR ĐỒNG BỘ --- */
-        .admin-nav {
-            background: #1e293b; color: white; padding: 15px 35px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
-        .admin-nav a:hover { color: white; }
-        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
-
-        /* --- 2. HEADER & SEARCH --- */
-        .admin-header-wrapper {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 35px; margin-top: 20px;
-        }
-        .header-left h1 { margin: 0; font-size: 28px; color: #1e293b; font-weight: 800; display: flex; align-items: center; gap: 12px; }
-        
-        .btn-dashboard {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-            color: white !important; padding: 12px 22px; border-radius: 12px;
-            text-decoration: none; font-weight: 600; font-size: 14px;
-            display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); transition: 0.3s; margin-top: 15px;
-        }
-        .btn-dashboard:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        .search-box-wrapper { position: relative; }
-        .search-box-wrapper input {
-            padding: 12px 15px 12px 42px; border-radius: 12px; border: 1px solid #ddd;
-            width: 300px; outline: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s;
-        }
-        .search-box-wrapper input:focus { border-color: #e84393; box-shadow: 0 0 0 3px rgba(232, 67, 147, 0.1); }
-        .search-box-wrapper i { position: absolute; left: 15px; top: 14px; color: #94a3b8; }
-
-        /* --- 3. BẢNG DỮ LIỆU --- */
-        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
-        .admin-table thead th { 
-            background-color: #1e293b; color: #f8fafc; padding: 18px; 
-            font-size: 13px; text-transform: uppercase; text-align: left; 
-        }
-        .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
-        .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
-
-        .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
-        .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-
-        .admin-table td { padding: 20px; vertical-align: top; border: none; }
-        .admin-table td:first-child { border-radius: 12px 0 0 12px; text-align: center; }
-        .admin-table td:last-child { border-radius: 0 12px 12px 0; }
-
-        .badge-stt { background: #334155; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
-        .sender-name { font-weight: bold; color: #1e293b; font-size: 16px; display: block; }
-        .contact-tag { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border: 1.5px solid transparent; transition: 0.2s; }
-        .contact-tag:hover { border-color: #0369a1; }
-        
-        .message-content { line-height: 1.6; color: #475569; font-style: italic; background: #f8fafc; padding: 15px; border-radius: 10px; border-left: 4px solid #cbd5e1; }
-
-        .btn-delete { 
-            color: #ef4444; text-decoration: none; font-weight: bold; 
-            border: 1.5px solid #ef4444; padding: 8px 16px; border-radius: 8px; 
-            font-size: 13px; transition: 0.3s; display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-delete:hover { background: #ef4444; color: white; }
-    </style>
+    <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/help_index.css">
 </head>
 <body>
 

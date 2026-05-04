@@ -1,5 +1,11 @@
 <?php require_once '../app/views/inc/header.php'; ?>
 
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
+
 <div style="max-width: 1100px; margin: 30px auto; padding: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
     
     <?php if(isset($_GET['msg'])): ?>

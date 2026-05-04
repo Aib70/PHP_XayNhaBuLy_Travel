@@ -1,5 +1,11 @@
+<?php
+if (!isset($data) || !isset($data['booking'])) {
+    echo '<div style="max-width:600px;margin:50px auto;padding:20px;background:#ffe6e6;color:#990000;border:1px solid #ffb3b3;border-radius:12px;font-family:sans-serif;">Lỗi: dữ liệu đặt chỗ chưa được truyền vào view.</div>';
+    return;
+}
+?>
 <div style="max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.1); font-family: sans-serif;">
-    <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Chi tiết Đặt chỗ #<?php echo $data['booking']['id']; ?></h2>
+    <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Chi tiết Đặt chỗ #<?php echo htmlspecialchars($data['booking']['id']); ?></h2>
     
     <p><strong>Khách hàng:</strong> <?php echo htmlspecialchars($data['booking']['user_name']); ?></p>
     <p><strong>Email:</strong> <?php echo htmlspecialchars($data['booking']['user_email']); ?></p>

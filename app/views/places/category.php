@@ -1,3 +1,8 @@
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
 <div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
     <h1 class="text-center my-4">
     <?php echo $data['title']; ?>

@@ -21,71 +21,14 @@
     <meta charset="UTF-8">
     <title>Quản lý Đặt chỗ - Xayabury Travel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* TỔNG THỂ */
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
-        .container { padding: 40px; max-width: 1300px; margin: auto; }
+    <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/admin/bookings.css">
+<?php
+    if (!isset($data) || !isset($data['booking'])) {
+    echo '<div style="max-width:600px;margin:50px auto;padding:20px;background:#ffe6e6;color:#990000;border:1px solid #ffb3b3;border-radius:12px;font-family:sans-serif;">Lỗi: dữ liệu đặt chỗ chưa được truyền vào view.</div>';
+    return;
+   }
+?>
 
-        /* --- 1. CẬP NHẬT NAVIGATION BAR (TRÊN CÙNG) --- */
-        .admin-nav {
-            background: #1e293b; color: white; padding: 15px 35px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
-        .admin-nav a:hover { color: white; }
-        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
-
-        /* --- 2. NÚT DASHBOARD --- */
-        .btn-dashboard {
-            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-            color: white !important; padding: 12px 22px; border-radius: 12px;
-            text-decoration: none; font-weight: 600; font-size: 14px;
-            display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
-            transition: 0.3s; margin-bottom: 30px; margin-top: 20px;
-        }
-        .btn-dashboard:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        /* --- 3. Ô TÌM KIẾM --- */
-        .search-container { position: relative; }
-        .search-input {
-            padding: 12px 15px 12px 42px; border-radius: 12px; 
-            border: 1px solid #ddd; width: 280px; outline: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s;
-        }
-        .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        .search-icon { position: absolute; left: 15px; top: 14px; color: #94a3b8; }
-
-        /* TIÊU ĐỀ & HEADER BẢNG */
-        .table-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .section-title { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-        .title-place { color: #1e3a8a; }
-        .title-hotel { color: #065f46; margin-top: 50px; }
-
-        /* BẢNG PHONG CÁCH THẺ */
-        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
-        .admin-table thead th { background-color: #1e293b; color: #f8fafc; padding: 15px; font-size: 12px; text-transform: uppercase; text-align: left; }
-        .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
-        .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
-
-        .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
-        .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.08); }
-        .admin-table td { padding: 15px 20px; border: none; vertical-align: middle; font-size: 14px; }
-        .admin-table td:first-child { border-radius: 12px 0 0 12px; font-weight: bold; color: #334155; text-align: center; }
-        .admin-table td:last-child { border-radius: 0 12px 12px 0; }
-
-        /* TRẠNG THÁI */
-        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-        .confirmed { background: #dcfce7; color: #166534; }
-        .pending { background: #fef3c7; color: #92400e; }
-
-        /* NÚT */
-        .btn-op { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; color: white; text-decoration: none; transition: 0.2s; }
-        .btn-confirm { background-color: #10b981; }
-        .btn-delete { background-color: #ef4444; }
-        .btn-op:hover { transform: scale(1.1); }
-    </style>
 </head>
 <body>
 

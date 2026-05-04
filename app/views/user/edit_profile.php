@@ -1,5 +1,9 @@
 <?php require_once '../app/views/inc/header.php'; ?>
-
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
 <div style="max-width: 500px; margin: 50px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); font-family: 'Segoe UI', sans-serif;">
     <h2 style="text-align: center; margin-bottom: 25px;">📝 Chỉnh sửa thông tin</h2>
     

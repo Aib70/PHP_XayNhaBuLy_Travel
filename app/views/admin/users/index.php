@@ -4,74 +4,8 @@
     <meta charset="UTF-8">
     <title>Quản lý Người dùng - Xayabury Travel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* TỔNG THỂ */
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #333; }
-        .container { padding: 40px; max-width: 1300px; margin: auto; }
-
-        /* --- 1. CẬP NHẬT NAVIGATION BAR (TRÊN CÙNG) --- */
-        .admin-nav {
-            background: #1e293b; color: white; padding: 15px 35px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .admin-nav a { color: #cbd5e1; text-decoration: none; margin-left: 20px; font-size: 14px; transition: 0.3s; }
-        .admin-nav a:hover { color: white; }
-        .btn-logout { background: #ef4444; color: white !important; padding: 8px 18px; border-radius: 8px; font-weight: bold; }
-
-        /* --- 2. HEADER ACTIONS & SEARCH --- */
-        .admin-header-wrapper {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 35px; margin-top: 20px;
-        }
-        h1 { margin: 0; font-size: 28px; color: #1e293b; font-weight: 800; }
-        
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-
-        .search-box { position: relative; }
-        .search-box input {
-            padding: 12px 15px 12px 42px; border-radius: 12px; border: 1px solid #ddd;
-            width: 280px; outline: none; transition: 0.3s; font-size: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .search-box input:focus { border-color: #6f42c1; box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.1); }
-        .search-box i { position: absolute; left: 15px; top: 14px; color: #aaa; }
-
-        .btn-main {
-            text-decoration: none; padding: 12px 20px; border-radius: 12px;
-            font-weight: bold; font-size: 14px; color: white; transition: 0.3s;
-            display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer;
-        }
-        .btn-add { background: linear-gradient(135deg, #6f42c1 0%, #59359a 100%); box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3); }
-        .btn-dashboard { background: linear-gradient(135deg, #64748b 0%, #475569 100%); box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3); }
-        .btn-main:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        /* BẢNG PHONG CÁCH THẺ */
-        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 15px; }
-        .admin-table thead th { background-color: #1e293b; color: #f8fafc; padding: 18px; font-size: 13px; text-transform: uppercase; text-align: left; }
-        .admin-table thead th:first-child { border-radius: 8px 0 0 8px; text-align: center; }
-        .admin-table thead th:last-child { border-radius: 0 8px 8px 0; }
-        .admin-table tbody tr { background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); transition: 0.3s; }
-        .admin-table tbody tr:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .admin-table td { padding: 20px; border: none; vertical-align: middle; }
-        .admin-table td:first-child { border-radius: 12px 0 0 12px; text-align: center; }
-        .admin-table td:last-child { border-radius: 0 12px 12px 0; }
-
-        .badge-stt { background: #334155; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; }
-        .btn-action { text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.3s; border: 1.5px solid; display: inline-block; margin-right: 5px; }
-        .btn-view { color: #28a745; border-color: #28a745; }
-        .btn-view:hover { background: #28a745; color: white; }
-        .btn-edit { color: #007bff; border-color: #007bff; }
-        .btn-edit:hover { background: #007bff; color: white; }
-        .btn-delete { color: #dc3545; border-color: #dc3545; }
-        .btn-delete:hover { background: #dc3545; color: white; }
-
-        /* TOAST ALERT */
-        .alert { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 10px; color: white; font-weight: bold; z-index: 9999; box-shadow: 0 5px 15px rgba(0,0,0,0.2); animation: slideIn 0.5s ease forwards; }
-        .alert-success { background: #2ecc71; }
-        .alert-danger { background: #e74c3c; }
-        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-    </style>
+     <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/admin_user_index.css">
+       
 </head>
 <body>
 

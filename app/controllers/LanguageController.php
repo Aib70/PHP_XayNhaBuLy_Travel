@@ -1,11 +1,18 @@
 <?php
 class LanguageController {
+
+    // ================== 1. KHỞI TẠO ==================
     public function __construct() {}
 
+    // ================== 2. CHUYỂN ĐỔI NGÔN NGỮ ==================
+
+    // Thay đổi ngôn ngữ hiển thị
     public function change($lang = 'vi') {
-        // Cập nhật danh sách cho phép có thêm 'en'
+
+        // Danh sách ngôn ngữ cho phép
         $allowed_langs = ['vi', 'lo', 'en'];
         
+        // Kiểm tra hợp lệ rồi lưu vào session
         if (in_array($lang, $allowed_langs)) {
             $_SESSION['lang'] = $lang;
         }

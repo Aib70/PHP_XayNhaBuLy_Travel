@@ -1,48 +1,15 @@
+
+ <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/viwe_special.css">
+<?php
+    if (!isset($data)) {
+    $data = [];
+}
+?>
+
 <style>
-    /* Giữ nguyên phần Style của bạn */
-    .special-hero {
-        position: relative;
-        height: 60vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-align: center;
-        background: url('<?= URLROOT ?>/public/img/places/<?= $data['place']['image_main'] ?>') center/cover no-repeat fixed;
-    }
-    .hero-overlay {
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1;
-    }
-    .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; }
-    .hero-content h1 { font-size: 3rem; text-transform: uppercase; margin-bottom: 10px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-    
-    .section-title { text-align: left; margin: 40px 0 20px; position: relative; }
-    .section-title::after {
-        content: ''; width: 50px; height: 3px; background: #f39c12;
-        display: block; margin-top: 10px;
-    }
-
-    .video-container {
-        max-width: 100%; margin: 0 auto 50px;
-        border-radius: 20px; overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-    }
-
-    .content-box {
-        line-height: 1.8; 
-        font-size: 1.1rem; 
-        color: #444;
-        text-align: justify; 
-        margin-bottom: 40px;
-    }
-
-    @media (max-width: 768px) {
-        .hero-content h1 { font-size: 1.8rem; }
-        .special-hero { height: 50vh; }
-    }
+.special-hero {
+    background-image: url('<?= URLROOT ?>/public/img/places/<?= htmlspecialchars($data['place']['image_main'] ?? 'default.jpg') ?>');
+}
 </style>
 
 <section class="special-hero">
@@ -69,12 +36,14 @@
         <p style="margin-top: 15px;"><strong>📍 <?= $data['text']['address']; ?>:</strong> <?= htmlspecialchars($data['place']['addr_' . $data['lang']] ?? ''); ?></p>
     </div>
 
-    <div class="video-container">
-        <iframe width="100%" height="550" src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                title="Video" frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
-        </iframe>
-    </div>
+    <!-- PHẦN VIDEO YOUTUBE ĐÃ ĐƯỢC SỬA LỖI URL NHÚNG -->
+<div class="video-container">
+    <iframe 
+        width="100%" height="550" 
+        src="https://www.youtube.com/embed/j9OEfeAANmo" 
+        frameborder="0" allowfullscreen>
+    </iframe>
+</div>
 
     <div style="display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 40px; align-items: flex-start;">
         <div id="booking-section" style="flex: 1.5; min-width: 350px; background: #fdfdfd; padding: 35px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee;">
