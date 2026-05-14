@@ -66,7 +66,7 @@
                     </div>
                 </li>
             <?php elseif(!isset($_SESSION['admin_id'])): ?>
-                <li><a href="<?php echo URLROOT; ?>/user/login">Login</a></li>
+                <li><a href="<?php echo URLROOT; ?>/user/login">Đăng nhập</a></li>
             <?php endif; ?>
         </ul>
 

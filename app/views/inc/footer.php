@@ -49,8 +49,8 @@
         <div>
             <h4 style="color: #fff; margin-bottom: 20px;"><?php echo $footer['contact']; ?></h4>
             <p style="font-size: 0.9rem; margin-bottom: 10px;">📍 <?php echo $footer['address']; ?></p>
-            <p style="font-size: 0.9rem; margin-bottom: 10px;">📞 +856 20 XXXX XXXX</p>
-            <p style="font-size: 0.9rem;">📧 info@xayaburytravel.gov.la</p>
+            <p style="font-size: 0.9rem; margin-bottom: 10px;">📞 +856 20 95487901</p>
+            <p style="font-size: 0.9rem;">📧 info@xayaburytravel.com</p>
         </div>
 
     </div>
