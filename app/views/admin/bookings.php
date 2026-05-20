@@ -23,10 +23,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="<?= URLROOT; ?>/public/css/admin/bookings.css">
 <?php
-    if (!isset($data) || !isset($data['booking'])) {
-    echo '<div style="max-width:600px;margin:50px auto;padding:20px;background:#ffe6e6;color:#990000;border:1px solid #ffb3b3;border-radius:12px;font-family:sans-serif;">Lỗi: dữ liệu đặt chỗ chưa được truyền vào view.</div>';
-    return;
-   }
+    $data['placeBookings'] = $data['placeBookings'] ?? [];
+    $data['hotelBookings'] = $data['hotelBookings'] ?? [];
 ?>
 
 </head>
@@ -81,8 +79,16 @@
                     <td><i class="fa fa-calendar-day"></i> <?= $row['booking_date'] ?></td>
                     <td><span class="status-badge <?= $row['status'] ?>"><?= $row['status'] ?></span></td>
                     <td>
-                        <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn-op btn-confirm" title="Xác nhận"><i class="fa fa-check"></i></a>
-                        <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn-op btn-delete" title="Xóa" onclick="return confirm('Xóa đơn này?')"><i class="fa fa-trash-can"></i></a>
+                        <?php if (can(Permissions::MANAGE_BOOKINGS)): ?>
+                            <form method="POST" action="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" style="display:inline;">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-op btn-confirm" title="Xác nhận" style="border:0;"><i class="fa fa-check"></i></button>
+                            </form>
+                            <form method="POST" action="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" style="display:inline;" onsubmit="return confirm('Xóa đơn này?')">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-op btn-delete" title="Xóa" style="border:0;"><i class="fa fa-trash-can"></i></button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -128,8 +134,16 @@
                     <td style="text-align: center;"><i class="fa fa-users"></i> <?= $row['guests'] ?></td>
                     <td><span class="status-badge <?= $row['status'] ?>"><?= $row['status'] ?></span></td>
                     <td>
-                        <a href="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" class="btn-op btn-confirm" title="Xác nhận"><i class="fa fa-check"></i></a>
-                        <a href="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" class="btn-op btn-delete" title="Xóa" onclick="return confirm('Xóa đơn này?')"><i class="fa fa-trash-can"></i></a>
+                        <?php if (can(Permissions::MANAGE_BOOKINGS)): ?>
+                            <form method="POST" action="<?= URLROOT ?>/admin/approve_booking/<?= $row['id'] ?>" style="display:inline;">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-op btn-confirm" title="Xác nhận" style="border:0;"><i class="fa fa-check"></i></button>
+                            </form>
+                            <form method="POST" action="<?= URLROOT ?>/admin/delete_booking/<?= $row['id'] ?>" style="display:inline;" onsubmit="return confirm('Xóa đơn này?')">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-op btn-delete" title="Xóa" style="border:0;"><i class="fa fa-trash-can"></i></button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

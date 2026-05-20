@@ -18,6 +18,7 @@
     <div class="form-container">
         <h2>Thêm người dùng mới</h2>
         <form action="<?= URLROOT ?>/admin/store_user" method="POST">
+            <?= Csrf::field() ?>
             <label>Họ và tên</label>
             <input type="text" name="fullname" placeholder="Nhập họ và tên..." required>
             

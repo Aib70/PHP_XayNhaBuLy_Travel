@@ -11,9 +11,18 @@ class AuthController {
 
     // Hiển thị trang đăng nhập
     public function login() {
+        if (isset($_SESSION['admin_id']) && empty(Authorization::currentPermissions())) {
+            $stmt = $this->db->prepare("SELECT * FROM admin WHERE id = ?");
+            $stmt->execute([$_SESSION['admin_id']]);
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($admin) {
+                Authorization::loadForAdmin($this->db, $admin);
+            }
+        }
+
         // Nếu đã đăng nhập admin thì chuyển thẳng vào dashboard
-        if (isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin') {
-            header('Location: ' . URLROOT . '/admin');
+        if (isset($_SESSION['admin_id']) && Authorization::hasPermission('view_dashboard')) {
+            header('Location: ' . URLROOT . '/admin/dashboard');
             exit();
         }
 
@@ -37,9 +46,11 @@ class AuthController {
                 // Tạo session admin
                 $_SESSION['admin_id'] = $foundUser['id'];
                 $_SESSION['admin_name'] = $foundUser['fullname'];
-                $_SESSION['role'] = 'admin';
+                $_SESSION['user_name'] = $foundUser['fullname'];
+                $_SESSION['user_email'] = $foundUser['email'] ?? null;
+                Authorization::loadForAdmin($this->db, $foundUser);
 
-                header('Location: ' . URLROOT . '/admin');
+                header('Location: ' . URLROOT . '/admin/dashboard');
                 exit();
 
             } else {
@@ -59,7 +70,11 @@ class AuthController {
         // Xóa session admin
         unset($_SESSION['admin_id']);
         unset($_SESSION['admin_name']);
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['user_email']);
         unset($_SESSION['role']);
+        Authorization::clear();
 
         // Hủy toàn bộ session
         session_destroy();

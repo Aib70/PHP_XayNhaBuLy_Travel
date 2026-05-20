@@ -13,6 +13,7 @@
     </div>
 
     <form action="<?php echo URLROOT; ?>/admin/store" method="POST" enctype="multipart/form-data">
+        <?= Csrf::field() ?>
         
         <input type="hidden" name="category_id" value="2">
 

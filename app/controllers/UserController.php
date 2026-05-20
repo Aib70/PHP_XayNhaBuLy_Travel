@@ -77,7 +77,7 @@ class UserController {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['fullname'];
                     $_SESSION['user_email'] = $user['email'];
-                    $_SESSION['role'] = 'member';
+                    Authorization::loadForUser($this->db, $user);
                     header('Location: ' . URLROOT . '/home');
                     exit();
                 } else {
@@ -92,8 +92,9 @@ class UserController {
                     if ($password == $admin['password']) {
                         $_SESSION['admin_id'] = $admin['id'];
                         $_SESSION['admin_name'] = $admin['fullname'];
+                        $_SESSION['user_name'] = $admin['fullname'];
                         $_SESSION['user_email'] = $admin['email'];
-                        $_SESSION['role'] = 'admin';
+                        Authorization::loadForAdmin($this->db, $admin);
                         header('Location: ' . URLROOT . '/admin/dashboard');
                         exit();
                     } else {
@@ -130,6 +131,9 @@ class UserController {
 
         unset($_SESSION['user_id']);
         unset($_SESSION['user_name']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['role']);
+        Authorization::clear();
 
         header('Location: ' . URLROOT . '/home');
         exit();

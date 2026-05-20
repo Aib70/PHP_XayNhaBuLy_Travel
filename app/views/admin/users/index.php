@@ -35,9 +35,11 @@
             <div class="header-left">
                 <h1>Quản lý người dùng</h1>
                 <div class="header-actions" style="margin-top: 15px;">
-                    <a href="<?= URLROOT ?>/admin/add_user" class="btn-main btn-add">
-                        <i class="fa-solid fa-user-plus"></i> Thêm người dùng mới
-                    </a>
+                    <?php if (can(Permissions::MANAGE_USERS)): ?>
+                        <a href="<?= URLROOT ?>/admin/add_user" class="btn-main btn-add">
+                            <i class="fa-solid fa-user-plus"></i> Thêm người dùng mới
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-main btn-dashboard">
                         <i class="fa-solid fa-house"></i> Dashboard
                     </a>
@@ -74,8 +76,13 @@
                     <td style="font-size: 13px; color: #94a3b8;"><?= date('d/m/Y', strtotime($user['created_at'])); ?></td>
                     <td>
                         <a href="<?= URLROOT; ?>/admin/user_detail/<?= $user['id']; ?>" class="btn-action btn-view">Xem</a>
-                        <a href="<?= URLROOT; ?>/admin/edit_user/<?= $user['id']; ?>" class="btn-action btn-edit">Sửa</a>
-                        <a href="<?= URLROOT; ?>/admin/delete_user/<?= $user['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</a>
+                        <?php if (can(Permissions::MANAGE_USERS)): ?>
+                            <a href="<?= URLROOT; ?>/admin/edit_user/<?= $user['id']; ?>" class="btn-action btn-edit">Sửa</a>
+                            <form method="POST" action="<?= URLROOT; ?>/admin/delete_user/<?= $user['id']; ?>" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-action btn-delete" style="border:0;">Xóa</button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; else: ?>

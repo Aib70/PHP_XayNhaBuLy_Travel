@@ -28,9 +28,11 @@
             <div class="header-left">
                 <h1>Quản lý Khách sạn</h1>
                 <div class="header-actions">
-                    <a href="<?= URLROOT ?>/admin/add_hotel" class="btn-main btn-add">
-                        <i class="fa-solid fa-plus"></i> Thêm khách sạn mới
-                    </a>
+                    <?php if (can(Permissions::MANAGE_HOTELS)): ?>
+                        <a href="<?= URLROOT ?>/admin/add_hotel" class="btn-main btn-add">
+                            <i class="fa-solid fa-plus"></i> Thêm khách sạn mới
+                        </a>
+                    <?php endif; ?>
                     <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-main btn-dashboard">
                         <i class="fa-solid fa-house"></i> Dashboard
                     </a>
@@ -75,9 +77,16 @@
                     <td>
                         <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                             <a href="<?= URLROOT; ?>/place/view/<?= $hotel['id']; ?>" class="btn-action btn-view" target="_blank"><i class="fa-solid fa-eye"></i> Xem</a>
-                            <a href="<?= URLROOT; ?>/admin/forum/<?= $hotel['id']; ?>" class="btn-action btn-forum"><i class="fa-solid fa-comments"></i> Diễn đàn</a>
-                            <a href="<?= URLROOT; ?>/admin/edit/<?= $hotel['id']; ?>" class="btn-action btn-edit"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
-                            <a href="<?= URLROOT; ?>/admin/delete/<?= $hotel['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Xóa khách sạn này?')"><i class="fa-solid fa-trash"></i> Xóa</a>
+                            <?php if (can_any([Permissions::APPROVE_POSTS, Permissions::DELETE_POSTS])): ?>
+                                <a href="<?= URLROOT; ?>/admin/forum/<?= $hotel['id']; ?>" class="btn-action btn-forum"><i class="fa-solid fa-comments"></i> Diễn đàn</a>
+                            <?php endif; ?>
+                            <?php if (can(Permissions::MANAGE_HOTELS)): ?>
+                                <a href="<?= URLROOT; ?>/admin/edit/<?= $hotel['id']; ?>" class="btn-action btn-edit"><i class="fa-solid fa-pen-to-square"></i> Sửa</a>
+                                <form method="POST" action="<?= URLROOT; ?>/admin/delete/<?= $hotel['id']; ?>" style="display:inline;" onsubmit="return confirm('Xóa khách sạn này?')">
+                                    <?= Csrf::field() ?>
+                                    <button type="submit" class="btn-action btn-delete" style="border:0;"><i class="fa-solid fa-trash"></i> Xóa</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </td>
                 </tr>

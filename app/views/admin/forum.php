@@ -76,17 +76,23 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if($p['status'] == 0): ?>
-                            <a href="<?= URLROOT; ?>/admin/approve_post/<?= $p['id']; ?>" class="btn-action btn-approve">
-                                <i class="fa-solid fa-check"></i> Duyệt
-                            </a>
+                        <?php if($p['status'] == 0 && can(Permissions::APPROVE_POSTS)): ?>
+                            <form method="POST" action="<?= URLROOT; ?>/admin/approve_post/<?= $p['id']; ?>" style="display:inline;">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-action btn-approve" style="border:0;">
+                                    <i class="fa-solid fa-check"></i> Duyệt
+                                </button>
+                            </form>
                         <?php endif; ?>
 
-                        <a href="<?= URLROOT; ?>/admin/delete_comment/<?= $p['id']; ?>" 
-                           class="btn-action btn-delete"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">
-                           <i class="fa-solid fa-trash-can"></i> Xóa
-                        </a>
+                        <?php if (can(Permissions::DELETE_POSTS)): ?>
+                            <form method="POST" action="<?= URLROOT; ?>/admin/delete_comment/<?= $p['id']; ?>" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bình luận này?')">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-action btn-delete" style="border:0;">
+                                    <i class="fa-solid fa-trash-can"></i> Xóa
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

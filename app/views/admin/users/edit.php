@@ -20,6 +20,7 @@
     <div class="form-container">
         <h2>Chỉnh sửa người dùng</h2>
         <form action="<?= URLROOT ?>/admin/update_user/<?= htmlspecialchars($data['user']['id']) ?>" method="POST">
+            <?= Csrf::field() ?>
             <label>Họ và tên</label>
             <input type="text" name="fullname" value="<?= htmlspecialchars($data['user']['fullname']) ?>" required>
             

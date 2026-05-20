@@ -42,10 +42,14 @@ class ForumController {
     public function delete($id, $place_id = 0) {
 
         // Kiểm tra quyền Admin
-        if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-            header('Location: ' . URLROOT . '/home');
+        Authorization::refreshCurrent($this->db);
+        Authorization::requirePermission(Permissions::DELETE_POSTS);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $target = ($place_id > 0) ? URLROOT . '/place/view/' . $place_id . '?error=method_not_allowed' : URLROOT . '/admin/forum?error=method_not_allowed';
+            header('Location: ' . $target);
             exit();
         }
+        Csrf::validateRequest();
 
         require_once '../app/models/ForumModel.php';
         $forumModel = new ForumModel($this->db);

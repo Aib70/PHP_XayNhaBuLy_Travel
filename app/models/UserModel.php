@@ -16,18 +16,41 @@ class UserModel {
 
             $hashed_password = password_hash($data['password'], PASSWORD_DEFAULT);
 
-            $sql = "INSERT INTO users (fullname, email, phone, password, created_at) 
-                    VALUES (:name, :email, :phone, :pass, NOW())";
+            $roleId = Authorization::roleIdByName($this->db, 'USER');
+            if ($roleId !== null) {
+                $sql = "INSERT INTO users (fullname, email, phone, password, role_id, created_at) 
+                        VALUES (:name, :email, :phone, :pass, :role_id, NOW())";
+            } else {
+                $sql = "INSERT INTO users (fullname, email, phone, password, created_at) 
+                        VALUES (:name, :email, :phone, :pass, NOW())";
+            }
             
+            $this->db->beginTransaction();
             $stmt = $this->db->prepare($sql);
-            
-            return $stmt->execute([
+
+            $params = [
                 'name'  => $data['fullname'],
                 'email' => $data['email'],
                 'phone' => $data['phone'],
                 'pass'  => $hashed_password
-            ]);
+            ];
+            if ($roleId !== null) {
+                $params['role_id'] = $roleId;
+            }
+
+            $created = $stmt->execute($params);
+            if ($created && $roleId !== null) {
+                $userId = (int) $this->db->lastInsertId();
+                $roleStmt = $this->db->prepare("INSERT IGNORE INTO user_roles (user_id, role_id) VALUES (?, ?)");
+                $roleStmt->execute([$userId, $roleId]);
+            }
+
+            $this->db->commit();
+            return $created;
         } catch (PDOException $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             return false;
         }
     }

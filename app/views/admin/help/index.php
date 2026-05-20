@@ -68,11 +68,14 @@
                         </div>
                     </td>
                     <td>
-                        <a href="<?= URLROOT ?>/admin/delete_help/<?= $req['id'] ?>" 
-                           class="btn-delete" 
-                           onclick="return confirm('Xóa yêu cầu này?')">
-                           <i class="fa-solid fa-trash-can"></i> Xóa
-                        </a>
+                        <?php if (can(Permissions::MANAGE_CONTACTS)): ?>
+                            <form method="POST" action="<?= URLROOT ?>/admin/delete_help/<?= $req['id'] ?>" onsubmit="return confirm('Xóa yêu cầu này?')">
+                                <?= Csrf::field() ?>
+                                <button type="submit" class="btn-delete" style="border:0;">
+                                   <i class="fa-solid fa-trash-can"></i> Xóa
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; else: ?>

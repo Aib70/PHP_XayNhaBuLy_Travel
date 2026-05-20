@@ -43,8 +43,8 @@
             <li><a href="<?php echo URLROOT; ?>/place/category/5" class="<?php echo ($current_cat == 5) ? 'active-link' : ''; ?>"><?php echo $text['festivals']; ?></a></li>
             <li><a href="<?php echo URLROOT; ?>/home/about" class="<?php echo (strpos($_SERVER['REQUEST_URI'], '/home/about') !== false) ? 'active-link' : ''; ?>"><?php echo $text['about']; ?></a></li>
             
-            <?php if(isset($_SESSION['admin_id']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="<?php echo URLROOT; ?>/admin" style="color: #28a745; font-weight: bold;">⚙ Admin</a></li>
+            <?php if(Authorization::hasPermission(Permissions::VIEW_DASHBOARD)): ?>
+                <li><a href="<?php echo URLROOT; ?>/admin/dashboard" style="color: #28a745; font-weight: bold;">⚙ Admin</a></li>
             <?php endif; ?>
 
             <?php if(isset($_SESSION['user_id'])): ?>

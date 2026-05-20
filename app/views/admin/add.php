@@ -11,6 +11,7 @@
         <h1>Nhập thông tin địa danh mới</h1>
         
         <form action="<?php echo URLROOT; ?>/admin/store" method="POST" enctype="multipart/form-data">
+            <?= Csrf::field() ?>
             
             <div class="upload-section">
                 <h3>🖼 Hình ảnh đại diện</h3>

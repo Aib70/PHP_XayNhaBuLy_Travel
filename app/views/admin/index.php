@@ -42,7 +42,9 @@
             <div class="header-left">
                 <h1>Quản lý địa danh Xayabury</h1>
                 <div class="header-actions">
-                    <a href="<?= URLROOT; ?>/admin/add" class="btn-main btn-add"><i class="fa-solid fa-plus"></i> Thêm địa danh mới</a>
+                    <?php if (can(Permissions::MANAGE_PLACES)): ?>
+                        <a href="<?= URLROOT; ?>/admin/add" class="btn-main btn-add"><i class="fa-solid fa-plus"></i> Thêm địa danh mới</a>
+                    <?php endif; ?>
                     <a href="<?= URLROOT; ?>/admin/dashboard" class="btn-main btn-dashboard"><i class="fa-solid fa-house"></i> Dashboard</a>
                 </div>
             </div>
@@ -79,10 +81,17 @@
                     <td>
                         <div>
                             <a href="<?= URLROOT; ?>/place/view/<?= $place['id']; ?>" class="btn-action btn-view" target="_blank">Xem</a>
-                            <a href="<?= URLROOT; ?>/admin/edit/<?= $place['id']; ?>" class="btn-action btn-edit">Sửa</a>
-                            <a href="<?= URLROOT; ?>/admin/delete/<?= $place['id']; ?>" class="btn-action btn-delete" onclick="return confirm('Xóa?')">Xóa</a>
+                            <?php if (can(Permissions::MANAGE_PLACES)): ?>
+                                <a href="<?= URLROOT; ?>/admin/edit/<?= $place['id']; ?>" class="btn-action btn-edit">Sửa</a>
+                                <form method="POST" action="<?= URLROOT; ?>/admin/delete/<?= $place['id']; ?>" style="display:inline;" onsubmit="return confirm('Xóa?')">
+                                    <?= Csrf::field() ?>
+                                    <button type="submit" class="btn-action btn-delete" style="border:0;">Xóa</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
-                        <a href="<?= URLROOT; ?>/admin/forum/<?= $place['id']; ?>" class="btn-forum-small"><i class="fa-solid fa-comments"></i> Quản lý Diễn đàn</a>
+                        <?php if (can_any([Permissions::APPROVE_POSTS, Permissions::DELETE_POSTS])): ?>
+                            <a href="<?= URLROOT; ?>/admin/forum/<?= $place['id']; ?>" class="btn-forum-small"><i class="fa-solid fa-comments"></i> Quản lý Diễn đàn</a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; else: ?>

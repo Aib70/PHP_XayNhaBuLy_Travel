@@ -19,6 +19,7 @@
         <h1>Chỉnh sửa: <?php echo htmlspecialchars($data['place']['name_vi']); ?></h1>
         
         <form action="<?php echo URLROOT; ?>/admin/update/<?php echo $data['place']['id']; ?>" method="POST" enctype="multipart/form-data">
+            <?= Csrf::field() ?>
             
             <label>Danh mục địa danh:</label>
             <select name="category_id" required>

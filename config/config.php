@@ -47,3 +47,7 @@ if (!isset($_SESSION['lang'])) {
     $_SESSION['lang'] = 'vi';
 
 }
+
+require_once __DIR__ . '/../app/core/Permissions.php';
+require_once __DIR__ . '/../app/core/Csrf.php';
+require_once __DIR__ . '/../app/core/Authorization.php';
